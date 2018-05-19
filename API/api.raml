@@ -1,0 +1,91 @@
+#%RAML 1.0
+title: Epidemik API
+version: v0.1
+mediaType: application/json
+baseUri: https://epidemik.us/api
+types:
+  NewUser:
+    properties: 
+      username: string
+      password: string
+      latitude: number
+      longitude: number
+      deviceID: string
+      date_of_birth: date-only
+      gender: 
+        type: string
+        enum: ["male", "female", "other"]
+    example:
+      username: "test"
+      password: "%123f67abc"
+      latitude: 61.4
+      longitude: 72.8
+      deviceID: "12345a423"
+      date_of_birth: "1973-02-21"
+      gender: "male"
+
+  Disease:
+    properties:
+      disease_name: string
+      date_sick: date-only
+      date_healthy: date-only | nil
+      symptoms: Symptom[]
+    example:
+      disease_name: "Common Cold"
+      date_sick: "2018-03-01"
+      date_healthy: "2018-03-12"
+      symptoms: [1,3,5]   
+
+  Symptom:
+    properties: 
+      symID: number
+    example:
+      symID: 1
+
+resourceTypes:
+  Collection:
+    get:
+      description: Get overview information on a collection of <<item>>s
+      responses:
+        200:
+          body:
+            application/json:
+              type: <<item>>[]
+
+  Member:
+    delete:
+      description: Delete the <<item>>
+      responses:
+        204:
+
+        403:
+          description: <<item>> does not exist
+          body:
+            application/json:
+              type: string
+
+  UserCollection:
+    type:  { Collection: {item : <<item>>} }
+    post:
+      description: Register a new <<item>> user.
+      body:
+        application/json:
+          type: <<newItem>>
+
+      responses:
+        204:
+
+        403:
+          description: Invalid username/password.
+          body:
+            properties:
+              error: string
+            examples:
+              usernameTaken:
+                error: "Username taken already."
+              badPassword:
+                error: "Password must be at least 8 characters long."
+
+/user:
+  type: { UserCollection: {newItem : NewUser, item : User} }
+  description: A collection of all patients in the system.
