@@ -33,7 +33,6 @@ types:
         type: string
         enum: ["male", "female", "other"]
       diseases: Disease[]
-    
     example:
       latitude: 61.4
       longitude: 72.8
@@ -53,7 +52,7 @@ types:
       disease_name: string
       date_sick: date-only
       date_healthy: date-only | nil
-      symptoms: number[]
+      symptoms: Symptom[]
     examples:
       not_sick:
         disease_name: "Common Cold"
@@ -78,6 +77,24 @@ types:
       latMax: 50
       longMax: 50
 
+  Symptom:
+    properties: 
+      symID: number
+    example:
+      symID: 1
+
+  Trend:
+    properties: 
+      lat: number
+      long: number
+      trendWeight: number
+      disease_name: string
+    example:
+      lat: 50.1
+      long: 50.1
+      trendWeight: 30.45
+      disease_name: "Common Cold"
+
 /users:
   post:
     description: Adds a new user.
@@ -100,13 +117,11 @@ types:
             application/json:
               type: string
             example: "#12akjcns&^sanus&^"
-
         426:
           body:
             application/json:
               type: string
             example: "Version out of date"
-
         403:
           body:
             properties:
@@ -138,21 +153,19 @@ types:
           application/json:
             type: string
           example: "Version out of date"
-
       401:
         body:
           application/json:
             type: string
           example: "Bad Authorization Token"
-
       201:
         body:
           application/json:
             type: User[]
-            
+
   /{userID}:
     put:
-      description: Changes this users password. 
+      description: Changes this users password and gives back the new salt.
       queryParameters: 
         version:
           displayName: Version
@@ -179,6 +192,22 @@ types:
           example: "bad_password"
           required: true
 
+      responses:
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        202:
+          body:
+            application/json:
+              type: string
+
     delete:
       description: Removes this user and all associated information.
       queryParameters: 
@@ -200,6 +229,18 @@ types:
           description: The password for the user account.
           example: "password"
           required: true
+      responses:
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        204:
 
     get:
       description: Returns information about this specific user.
@@ -217,6 +258,22 @@ types:
           example: "#12akjcns&^sanus&^"
           required: true
 
+      responses:
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: User
+
     /diseases:
       patch:
         description: Marks this user as healthy.
@@ -233,6 +290,24 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
+          date_healthy:
+            displayName: Date Healthy
+            type: date-only
+            description: The date the user because healthy on. Not required. If not included, marks as healthy today.
+            example: "2015-04-05"
+            required: false
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          204:
 
       post:
         description: Put a new sickness in this users records.
@@ -254,6 +329,23 @@ types:
             type: Disease
             description: The information for the disease the user wishes to log.
             required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: string
+              description: Returns the disease ID of the new sickness.
+
       get:
         description: Return information about this users sickness. 
         queryParameters: 
@@ -269,6 +361,21 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: Disease[]
 
       /{diseaseID}:
         delete:
@@ -286,6 +393,19 @@ types:
               description: The authorization token the user was given when they logged in.
               example: "#12akjcns&^sanus&^"
               required: true
+          responses:          
+            426:
+              body:
+                application/json:
+                  type: string
+                example: "Version out of date"
+            401:
+              body:
+                application/json:
+                  type: string
+                example: "Bad Authorization Token"
+            204:
+
         get:
           description: Returns information about this disease.
           queryParameters: 
@@ -301,10 +421,25 @@ types:
               description: The authorization token the user was given when they logged in.
               example: "#12akjcns&^sanus&^"
               required: true
+          responses:          
+            426:
+              body:
+                application/json:
+                  type: string
+                example: "Version out of date"
+            401:
+              body:
+                application/json:
+                  type: string
+                example: "Bad Authorization Token"
+            200:
+              body:
+                application/json:
+                  type: Disease
 
         /symptoms:
           get:
-            description: Returns all information about this users symptoms. 
+            description: Returns all information about this disease's symptoms. 
             queryParameters: 
               version:
                 displayName: Version
@@ -318,6 +453,21 @@ types:
                 description: The authorization token the user was given when they logged in.
                 example: "#12akjcns&^sanus&^"
                 required: true
+            responses:          
+              426:
+                body:
+                  application/json:
+                    type: string
+                  example: "Version out of date"
+              401:
+                body:
+                  application/json:
+                    type: string
+                  example: "Bad Authorization Token"
+              200:
+                body:
+                  application/json:
+                    type: Symptom[]
 
           /{symptomID}:
             delete:
@@ -335,7 +485,19 @@ types:
                   description: The authorization token the user was given when they logged in.
                   example: "#12akjcns&^sanus&^"
                   required: true
-                  
+              responses:          
+                426:
+                  body:
+                    application/json:
+                      type: string
+                    example: "Version out of date"
+                401:
+                  body:
+                    application/json:
+                      type: string
+                    example: "Bad Authorization Token"
+                204:
+
             get:
               description: Returns information about this symptom. 
               queryParameters: 
@@ -351,6 +513,21 @@ types:
                   description: The authorization token the user was given when they logged in.
                   example: "#12akjcns&^sanus&^"
                   required: true
+              responses:          
+                426:
+                  body:
+                    application/json:
+                      type: string
+                    example: "Version out of date"
+                401:
+                  body:
+                    application/json:
+                      type: string
+                    example: "Bad Authorization Token"
+                200:
+                  body:
+                    application/json:
+                      type: Symptom
     
     /symptoms:
       post:
@@ -374,6 +551,22 @@ types:
             description: The ID value of the symptom the user wants to submit.
             example: 1
             required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: string
+              description: Returns the symptom ID of the new symptom.
 
       get:
         description: Returns all the information about this users current symptoms.
@@ -390,6 +583,21 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: Symptom[]
 
 /diseases:
   get:
@@ -412,6 +620,21 @@ types:
         type: Region
         description: The region the user wishes to get data in.
         required: true
+    responses:          
+      426:
+        body:
+          application/json:
+            type: string
+          example: "Version out of date"
+      401:
+        body:
+          application/json:
+            type: string
+          example: "Bad Authorization Token"
+      200:
+        body:
+          application/json:
+            type: Disease[]
 
   /{disease_name}:
     get:
@@ -434,6 +657,21 @@ types:
           type: Region
           description: The region the user wishes to get data in.
           required: true
+      responses:          
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: Disease[]
 
     /symptoms:
       get:
@@ -451,6 +689,21 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: Symptom[]
 
 /trends:
   get:
@@ -473,6 +726,21 @@ types:
         type: Region
         description: The region the user wishes to get data in.
         required: true
+    responses: 
+      426:
+        body:
+          application/json:
+            type: string
+          example: "Version out of date"
+      401:
+        body:
+          application/json:
+            type: string
+          example: "Bad Authorization Token"
+      200:
+        body:
+          application/json:
+            type: Trend[]
 
   /{disease_name}:
     get:
@@ -495,3 +763,18 @@ types:
           type: Region
           description: The region the user wishes to get data in.
           required: true
+      responses: 
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: Disease[]
