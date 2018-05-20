@@ -1,5 +1,5 @@
 #%RAML 1.0
-title: Epidemik API
+title: Epidemik
 version: v0.1
 mediaType: application/json
 baseUri: https://epidemik.us/api
@@ -24,68 +24,474 @@ types:
       date_of_birth: "1973-02-21"
       gender: "male"
 
+  User:
+    properties: 
+      latitude: number
+      longitude: number
+      date_of_birth: date-only
+      gender:
+        type: string
+        enum: ["male", "female", "other"]
+      diseases: Disease[]
+    
+    example:
+      latitude: 61.4
+      longitude: 72.8
+      date_of_birth: "1973-02-21"
+      gender: "male"
+      diseases: [
+        {
+          disease_name: "Common Cold"
+          date_sick: "2018-03-01"
+          date_healthy: "2018-03-12"
+          symptoms: [1,3,5]
+        }
+      ]
+
   Disease:
     properties:
       disease_name: string
       date_sick: date-only
       date_healthy: date-only | nil
-      symptoms: Symptom[]
-    example:
-      disease_name: "Common Cold"
-      date_sick: "2018-03-01"
-      date_healthy: "2018-03-12"
-      symptoms: [1,3,5]   
+      symptoms: number[]
+    examples:
+      not_sick:
+        disease_name: "Common Cold"
+        date_sick: "2018-03-01"
+        date_healthy: "2018-03-12"
+        symptoms: [1,3,5]   
+      still_sick:
+        disease_name: "Common Cold"
+        date_sick: "2018-03-01"
+        date_healthy: nil
+        symptoms: [1,3,5]   
 
-  Symptom:
+  Region:
     properties: 
-      symID: number
+      latMin: number
+      longMin: number
+      latMax: number
+      longMax: number
     example:
-      symID: 1
+      latMin: 0
+      longMin: 0
+      latMax: 50
+      longMax: 50
 
-resourceTypes:
-  Collection:
-    get:
-      description: Get overview information on a collection of <<item>>s
-      responses:
-        200:
-          body:
-            application/json:
-              type: <<item>>[]
+/users:
+  post:
+    description: Adds a new user.
+    queryParameters: 
+      version:
+        displayName: Version
+        type: string
+        description: The current version of the app the user is using.
+        example: 1.0
+        required: true
+      userInfo:
+        displayName: User
+        type: NewUser
+        description: All the information for the user that is registering.
+        required: true
 
-  Member:
-    delete:
-      description: Delete the <<item>>
-      responses:
-        204:
-
-        403:
-          description: <<item>> does not exist
+    responses:
+        201:
           body:
             application/json:
               type: string
+            example: "#12akjcns&^sanus&^"
 
-  UserCollection:
-    type:  { Collection: {item : <<item>>} }
-    post:
-      description: Register a new <<item>> user.
-      body:
-        application/json:
-          type: <<newItem>>
-
-      responses:
-        204:
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
 
         403:
-          description: Invalid username/password.
           body:
             properties:
               error: string
             examples:
-              usernameTaken:
-                error: "Username taken already."
-              badPassword:
-                error: "Password must be at least 8 characters long."
+             userExists: 
+              error: "Username already used"
+             bad_password: 
+              error: "Invalid Password"
+  get:
+    description: Return every disease every user has ever had.
+    queryParameters: 
+      version:
+        displayName: Version
+        type: string
+        description: The current version of the app the user is using.
+        example: 1.0
+        required: true
+      auth_token:
+        displayName: Authorization Token
+        type: string
+        description: The authorization token the user was given when they logged in.
+        example: "#12akjcns&^sanus&^"
+        required: true
 
-/user:
-  type: { UserCollection: {newItem : NewUser, item : User} }
-  description: A collection of all patients in the system.
+    responses:
+      426:
+        body:
+          application/json:
+            type: string
+          example: "Version out of date"
+
+      401:
+        body:
+          application/json:
+            type: string
+          example: "Bad Authorization Token"
+
+      201:
+        body:
+          application/json:
+            type: User[]
+            
+  /{userID}:
+    put:
+      description: Changes this users password. 
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        new_password:
+          displayName: New Password
+          type: string
+          description: The new password for the user account.
+          example: "password"
+          required: true
+        old_password:
+          displayName: Old Password
+          type: string
+          description: The current password for the user account.
+          example: "bad_password"
+          required: true
+
+    delete:
+      description: Removes this user and all associated information.
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        password:
+          displayName: Password
+          type: string
+          description: The password for the user account.
+          example: "password"
+          required: true
+
+    get:
+      description: Returns information about this specific user.
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+
+    /diseases:
+      patch:
+        description: Marks this user as healthy.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+
+      post:
+        description: Put a new sickness in this users records.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+          disease_info:
+            displayName: Disease Information
+            type: Disease
+            description: The information for the disease the user wishes to log.
+            required: true
+      get:
+        description: Return information about this users sickness. 
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+
+      /{diseaseID}:
+        delete:
+          description: Removes this specific disease.
+          queryParameters: 
+            version:
+              displayName: Version
+              type: string
+              description: The current version of the app the user is using.
+              example: 1.0
+              required: true
+            auth_token:
+              displayName: Authorization Token
+              type: string
+              description: The authorization token the user was given when they logged in.
+              example: "#12akjcns&^sanus&^"
+              required: true
+        get:
+          description: Returns information about this disease.
+          queryParameters: 
+            version:
+              displayName: Version
+              type: string
+              description: The current version of the app the user is using.
+              example: 1.0
+              required: true
+            auth_token:
+              displayName: Authorization Token
+              type: string
+              description: The authorization token the user was given when they logged in.
+              example: "#12akjcns&^sanus&^"
+              required: true
+
+        /symptoms:
+          get:
+            description: Returns all information about this users symptoms. 
+            queryParameters: 
+              version:
+                displayName: Version
+                type: string
+                description: The current version of the app the user is using.
+                example: 1.0
+                required: true
+              auth_token:
+                displayName: Authorization Token
+                type: string
+                description: The authorization token the user was given when they logged in.
+                example: "#12akjcns&^sanus&^"
+                required: true
+
+          /{symptomID}:
+            delete:
+              description: Removes this symptom from this diseases list of symptoms. 
+              queryParameters: 
+                version:
+                  displayName: Version
+                  type: string
+                  description: The current version of the app the user is using.
+                  example: 1.0
+                  required: true
+                auth_token:
+                  displayName: Authorization Token
+                  type: string
+                  description: The authorization token the user was given when they logged in.
+                  example: "#12akjcns&^sanus&^"
+                  required: true
+                  
+            get:
+              description: Returns information about this symptom. 
+              queryParameters: 
+                version:
+                  displayName: Version
+                  type: string
+                  description: The current version of the app the user is using.
+                  example: 1.0
+                  required: true
+                auth_token:
+                  displayName: Authorization Token
+                  type: string
+                  description: The authorization token the user was given when they logged in.
+                  example: "#12akjcns&^sanus&^"
+                  required: true
+    
+    /symptoms:
+      post:
+        description: Puts a new symptom in this users list of current symptoms.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+          symID:
+            displayName: Symptom ID
+            type: number
+            description: The ID value of the symptom the user wants to submit.
+            example: 1
+            required: true
+
+      get:
+        description: Returns all the information about this users current symptoms.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+
+/diseases:
+  get:
+    description: Returns information about every disease in the requested region.
+    queryParameters: 
+      version: 
+        displayName: Version
+        type: string
+        description: The current version of the app the user is using.
+        example: 1.0
+        required: true
+      auth_token:
+        displayName: Authorization Token
+        type: string
+        description: The authorization token the user was given when they logged in.
+        example: "#12akjcns&^sanus&^"
+        required: true
+      region:
+        displayName: Query Region
+        type: Region
+        description: The region the user wishes to get data in.
+        required: true
+
+  /{disease_name}:
+    get:
+      description: Returns information about every disease matching this disease name in the requested region.
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        region:
+          displayName: Query Region
+          type: Region
+          description: The region the user wishes to get data in.
+          required: true
+
+    /symptoms:
+      get:
+        description: Returns information about every symptom matching this disease name in the requested region.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+
+/trends:
+  get:
+    description: Returns information about all the disease trends in the requested region
+    queryParameters: 
+      version:
+        displayName: Version
+        type: string
+        description: The current version of the app the user is using.
+        example: 1.0
+        required: true
+      auth_token:
+        displayName: Authorization Token
+        type: string
+        description: The authorization token the user was given when they logged in.
+        example: "#12akjcns&^sanus&^"
+        required: true
+      region:
+        displayName: Query Region
+        type: Region
+        description: The region the user wishes to get data in.
+        required: true
+
+  /{disease_name}:
+    get:
+      description: Returns information about this disease name in the users region.
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        region:
+          displayName: Query Region
+          type: Region
+          description: The region the user wishes to get data in.
+          required: true
