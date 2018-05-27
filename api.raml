@@ -2,7 +2,7 @@
 title: Epidemik
 version: v0.1
 mediaType: application/json
-baseUri: https://epidemik.us/api
+baseUri: https://epidemik.us/api.php
 types:
   NewUser:
     properties: 
@@ -105,11 +105,9 @@ types:
         description: The current version of the app the user is using.
         example: 1.0
         required: true
-      userInfo:
-        displayName: User
+    body:
+      application/json:
         type: NewUser
-        description: All the information for the user that is registering.
-        required: true
 
     responses:
         201:
@@ -324,11 +322,9 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
-          disease_info:
-            displayName: Disease Information
+        body:
+          application/json:
             type: Disease
-            description: The information for the disease the user wishes to log.
-            required: true
         responses:          
           426:
             body:
@@ -344,7 +340,8 @@ types:
             body:
               application/json:
                 type: string
-              description: Returns the disease ID of the new sickness.
+              description: Returns the name of the disease that the backend thinks you have.
+            example: "Common Cold"
 
       get:
         description: Return information about this users sickness. 
@@ -497,37 +494,6 @@ types:
                       type: string
                     example: "Bad Authorization Token"
                 204:
-
-            get:
-              description: Returns information about this symptom. 
-              queryParameters: 
-                version:
-                  displayName: Version
-                  type: string
-                  description: The current version of the app the user is using.
-                  example: 1.0
-                  required: true
-                auth_token:
-                  displayName: Authorization Token
-                  type: string
-                  description: The authorization token the user was given when they logged in.
-                  example: "#12akjcns&^sanus&^"
-                  required: true
-              responses:          
-                426:
-                  body:
-                    application/json:
-                      type: string
-                    example: "Version out of date"
-                401:
-                  body:
-                    application/json:
-                      type: string
-                    example: "Bad Authorization Token"
-                200:
-                  body:
-                    application/json:
-                      type: Symptom
     
     /symptoms:
       post:
@@ -545,12 +511,10 @@ types:
             description: The authorization token the user was given when they logged in.
             example: "#12akjcns&^sanus&^"
             required: true
-          symID:
-            displayName: Symptom ID
+        body:
+          application/json:
             type: number
-            description: The ID value of the symptom the user wants to submit.
-            example: 1
-            required: true
+            description: The symptom you wish to report. 
         responses:          
           426:
             body:
@@ -703,7 +667,7 @@ types:
           200:
             body:
               application/json:
-                type: Symptom[]
+                type: Symptom[][]
 
 /trends:
   get:
@@ -741,40 +705,3 @@ types:
         body:
           application/json:
             type: Trend[]
-
-  /{disease_name}:
-    get:
-      description: Returns information about this disease name in the users region.
-      queryParameters: 
-        version:
-          displayName: Version
-          type: string
-          description: The current version of the app the user is using.
-          example: 1.0
-          required: true
-        auth_token:
-          displayName: Authorization Token
-          type: string
-          description: The authorization token the user was given when they logged in.
-          example: "#12akjcns&^sanus&^"
-          required: true
-        region:
-          displayName: Query Region
-          type: Region
-          description: The region the user wishes to get data in.
-          required: true
-      responses: 
-        426:
-          body:
-            application/json:
-              type: string
-            example: "Version out of date"
-        401:
-          body:
-            application/json:
-              type: string
-            example: "Bad Authorization Token"
-        200:
-          body:
-            application/json:
-              type: Disease[]

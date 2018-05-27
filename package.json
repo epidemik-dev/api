@@ -1,0 +1,20 @@
+{
+  "name": "epidemik-api",
+  "version": "1.0.0",
+  "description": "The api used to querry to the Epidemik database.",
+  "main": "epidemik.us/api",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/ryan-bradford/Epidemik"
+  },
+  "author": "Ryan Bradford",
+  "license": "MIT",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "mocha": "^5.2.0"
+  }
+}
