@@ -8,7 +8,8 @@ const chai = require("chai");
 var expect = chai.expect;
 var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-var app = 'https://epidemik.us/api';
+
+const app = require('../index').app;
 
 describe("Resets the database", function () {
     it("should return status 204 if sucessful", function (done) {

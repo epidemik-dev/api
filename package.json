@@ -1,20 +1,37 @@
 {
-  "name": "epidemik-api",
+  "name": "epidemik",
   "version": "1.0.0",
-  "description": "The api used to querry to the Epidemik database.",
-  "main": "epidemik.us/api",
+  "description": "The API for the Epidemik Control",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc --reporter=text mocha"
   },
   "repository": {
     "type": "git",
-    "url": "github.com/ryan-bradford/Epidemik"
+    "url": "git+https://github.com/ryan-bradford/Epidemik.git"
   },
   "author": "Ryan Bradford",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryan-bradford/Epidemik/issues"
+  },
+  "homepage": "https://github.com/ryan-bradford/Epidemik#readme",
   "dependencies": {
+    "acl": "^0.4.11",
+    "bcrypt": "^2.0.1",
+    "body-parser": "^1.18.3",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
-    "mocha": "^5.2.0"
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "mocha": "^5.2.0",
+    "mysql": "^2.15.0",
+    "nyc": "^12.0.2",
+    "promise-mysql": "^3.3.1"
   }
 }
