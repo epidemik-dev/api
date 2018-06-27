@@ -21,7 +21,7 @@ const diseaseDB = new DiseaseDB('EPIDEMIK_TEST');
 // The db used to change stuf related to trends
 const trendDB = new TrendDB("EPIDEMIK_TEST");
 // The db used to reset the app
-const resetDB = new ResetDB("EPIDEMIK_TEST")
+const resetDB = new ResetDB("EPIDEMIK_TEST", userDB)
 /****************************BEGIN DOING STUFF TO THE EXPRESS APP***************************/
 const app = express();
 

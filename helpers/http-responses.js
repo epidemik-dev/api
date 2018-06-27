@@ -30,15 +30,8 @@ function report_bad_token(req, res) {
 // Sends the message to the user that the content they 
 // are trying to view does not exist
 function report_not_found(req, res) {
-    if (req.headers['accept'] === undefined) {
-        res.writeHead(403);
-        res.end();
-    } else if (req.headers['accept'].includes('text/html')) {
-        res.render('page-not-found');
-    } else if (req.headers['accept'].includes('application/json')) {
-        res.writeHead(403);
-        res.end();
-    }
+    res.writeHead(403);
+    res.end();
 }
 
 // Req Res -> Void
