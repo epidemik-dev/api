@@ -274,18 +274,16 @@ describe("Add symptom", function () {
     });
 });
 
-/*
-
 describe("Get symptoms", function () {
     it("should return every symptom this user currently has", function (done) {
         chai.request(app)
-            .gvet('/users/ryan/symptoms')
+            .get('/users/ryan/symptoms')
             .query({
                 version: "1",
                 auth_token: ryan_auth_token
             })
             .end(function (err, res) {
-                expect(res.body).to.be.deep.equal([2, 3, 4]);
+                expect(res.body).to.be.deep.equal([{symID: 2}, {symID: 3}, {symID: 4}]);
                 done();
             });
     });
@@ -298,11 +296,13 @@ describe("Get symptoms", function () {
                 auth_token: ryan_auth_token
             })
             .end(function (err, res) {
-                expect(res.body).to.be.deep.equal([2, 3, 4]);
+                expect(res.body).to.be.deep.equal([{symID: 2}, {symID: 3}, {symID: 4}]);
                 done();
             });
     });
 });
+
+/*
 
 describe("Get specific disease", function () {
     it("should return all info about this users diseases", function (done) {

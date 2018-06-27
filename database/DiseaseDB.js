@@ -3,13 +3,16 @@ const mysql = require('promise-mysql');
 
 const add_disease_sql = "INSERT INTO DISEASE_POINTS (disease_name, date, date_healthy, username) VALUES (?, ?, ?, ?)";
 const add_symptom_sql = "INSERT INTO DISSYM VALUES (?, ?)";
+const add_sym_sql = "INSERT INTO DISSYM SELECT id, ? FROM DISEASE_POINTS WHERE username = ? AND date_healthy IS NULL";
 
 const delete_disease_sym_sql = "DELETE FROM DISSYM WHERE diseaseID = ?";
 const delete_disease_sql = "DELETE FROM DISEASE_POINTS WHERE id = ?";
 const delete_single_symptom_sql = "DELETE FROM DISSYM WHERE symID = ?";
 
 const am_healthy_sql = "UPDATE DISEASE_POINTS SET date_healthy = ? WHERE date_healthy IS NULL AND username = ?";
-const add_sym_sql = "INSERT INTO DISSYM SELECT id, ? FROM DISEASE_POINTS WHERE username = ? AND date_healthy IS NULL";
+
+const get_user_symptoms = "SELECT symID FROM DISSYM, DISEASE_POINTS WHERE id = diseaseID AND date_healthy IS NULL AND username = ?";
+const get_disease_symptoms = "SELECT symID FROM DISSYM WHERE diseaseID = ?";
 
 class DiseaseDB {
 
@@ -34,7 +37,7 @@ class DiseaseDB {
         }).then(result => {
             var disID = result.insertId;
             for (var symptom in symptoms) {
-                var add_sym_query = mysql.format(add_symptom_sql, [disID, symptom])
+                var add_sym_query = mysql.format(add_symptom_sql, [disID, symptoms[symptom]])
                 connection.query(add_sym_query);
             }
             connection.release();
@@ -87,13 +90,49 @@ class DiseaseDB {
             connection.release();
             return res;
         }).then(result => {
-            if(result.affectedRows === 0) {
+            if (result.affectedRows === 0) {
                 throw new Error("You must be sick");
             } else {
-                return symID;s
+                return symID;
+                s
             }
         })
     }
+
+    // String -> Promise([List-of Symptom])
+    // Returns every symptom this user has
+    get_user_symptoms(userID) {
+        var get_sym_query = mysql.format(get_user_symptoms, [userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_sym_query);
+            connection.release();
+            return res;
+        }).then(results => {
+            var toReturn = [];
+            for (var i in results) {
+                toReturn.push(results[i]);
+            }
+            return toReturn;
+        });
+    }
+
+    // String -> Promise([List-of String])
+    // Returns every symptom this disease has
+    get_disease_symptoms(disID) {
+        var get_sym_query = mysql.format(get_disease_symptoms, [disID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_sym_query);
+            connection.release();
+            return res;
+        }).then(results => {
+            var toReturn = [];
+            for (var i in results) {
+                toReturn.push(results[i]);
+            }
+            return toReturn;
+        });
+    }
+    
 
 }
 
