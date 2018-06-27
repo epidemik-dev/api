@@ -177,7 +177,7 @@ describe("Add diseases to the system", function () {
             .post('/users/brynn/diseases')
             .query({
                 version: "1",
-                auth_token: cole_auth_token
+                auth_token: brynn_auth_token
             })
             .send({
                 disease_name: 'Common-Cold',
@@ -191,7 +191,7 @@ describe("Add diseases to the system", function () {
             });
     });
 });
-/*
+
 describe("Delete diseases", function () {
     it("should return status 204 if the deletion is sucessful", function (done) {
         chai.request(app)
@@ -229,9 +229,8 @@ describe("Change a users password", function () {
             .put('/users/ryan')
             .query({
                 version: "1",
-                auth_token: cole_auth_token,
-                new_password: 'password_test',
-                old_password: 'test_password'
+                auth_token: ryan_auth_token,
+                new_password: 'password_test'
             })
             .end(function (err, res) {
                 expect(res.status).to.be.equal(202);
@@ -241,6 +240,7 @@ describe("Change a users password", function () {
             });
     });
 });
+
 
 describe("Delete symptom", function () {
     it("should give status 204 if sucessful", function (done) {
@@ -256,6 +256,8 @@ describe("Delete symptom", function () {
             });
     });
 });
+
+/*
 
 describe("Add symptom", function () {
     it("should give status 204 if sucessful", function (done) {

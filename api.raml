@@ -183,12 +183,6 @@ types:
           description: The new password for the user account.
           example: "password"
           required: true
-        old_password:
-          displayName: Old Password
-          type: string
-          description: The current password for the user account.
-          example: "bad_password"
-          required: true
 
       responses:
         426:
@@ -220,12 +214,6 @@ types:
           type: string
           description: The authorization token the user was given when they logged in.
           example: "#12akjcns&^sanus&^"
-          required: true
-        password:
-          displayName: Password
-          type: string
-          description: The password for the user account.
-          example: "password"
           required: true
       responses:
         426:

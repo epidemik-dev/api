@@ -11,6 +11,8 @@ const delete_user_diseases_sql = `DELETE DP FROM DISEASE_POINTS DP WHERE DP.user
 const delete_bus_user_sql = `DELETE FROM BUSUSER WHERE uName = ? OR bName=  ?`;
 const delete_user_sql = `DELETE FROM USERS where username = ?`
 
+const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
+
 
 class UserDB {
 
@@ -64,6 +66,30 @@ class UserDB {
             connection.release();
             return res;
         })
+    }
+
+    // String String -> Promise(Void)
+    // Updates this users password to the new one
+    change_password(username, new_password) {
+        var salt = bcrypt.genSaltSync(saltRounds);
+        var password = bcrypt.hashSync(new_password, salt);
+        var change_password_query = mysql.format(change_password_sql, [password, salt, username]);
+
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(change_password_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            var token = jwt.sign({
+                data: {
+                    username: username,
+                    password_hash: password
+                }
+            }, process.env.JWT_SECRET, {
+                expiresIn: '10d'
+            });
+            return token
+        });
     }
 
 }

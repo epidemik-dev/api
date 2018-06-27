@@ -81,6 +81,13 @@ function report_creation_sucessful(req, res, info) {
     res.end(JSON.stringify(info));
 }
 
+function report_accepted(req, res, info) {
+    res.writeHead(202, {
+        "Content-Type": "application/json"
+    });
+    res.end(JSON.stringify(info));
+}
+
 module.exports = {
     report_not_authorized: report_not_authorized,
     report_bad_token: report_bad_token,
@@ -89,5 +96,6 @@ module.exports = {
     report_sucess_no_info: report_sucess_no_info,
     report_sucess_with_info: report_sucess_with_info,
     report_fail_with_message: report_fail_with_message,
-    report_creation_sucessful: report_creation_sucessful
+    report_creation_sucessful: report_creation_sucessful,
+    report_accepted: report_accepted
 };
