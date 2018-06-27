@@ -57,7 +57,6 @@ class UserDB {
         var delete_disease_query = mysql.format(delete_user_diseases_sql, [username])
         var delete_bus_query = mysql.format(delete_bus_user_sql, [username, username])
         var delete_user_query = mysql.format(delete_user_sql, [username])
-        console.log(delete_disease_query);
         return this.pool.getConnection().then(connection => {
             var res = Promise.all([connection.query(delete_symptom_query),
                 connection.query(delete_disease_query),

@@ -2,7 +2,7 @@ function add_disease(req, res) {
     var disease_name = req.body.disease_name;
     var date_sick = req.body.date_sick;
     var date_healthy = req.body.date_healthy;
-    var username = req.body.username;
+    var username = req.params.userID;
     var symptoms = req.body.symptoms;
     req.diseaseDB.add_disease(disease_name, date_sick, date_healthy, username, symptoms).then(result => {
         req.http_responses.report_sucess_no_info(req, res);

@@ -43,7 +43,7 @@ types:
           disease_name: "Common Cold"
           date_sick: "2018-03-01"
           date_healthy: "2018-03-12"
-          symptoms: [1,3,5]
+          symptoms: [symID: 1,symID: 3,symID: 5]
         }
       ]
 
@@ -58,12 +58,12 @@ types:
         disease_name: "Common Cold"
         date_sick: "2018-03-01"
         date_healthy: "2018-03-12"
-        symptoms: [1,3,5]   
+        symptoms: [symID: 1,symID: 3,symID: 5]   
       still_sick:
         disease_name: "Common Cold"
         date_sick: "2018-03-01"
         date_healthy: nil
-        symptoms: [1,3,5]   
+        symptoms: [symID: 1,symID: 3,symID: 5]   
 
   Region:
     properties: 
@@ -501,7 +501,7 @@ types:
             required: true
         body:
           application/json:
-            type: number
+            type: Symptom
             description: The symptom you wish to report. 
         responses:          
           426:

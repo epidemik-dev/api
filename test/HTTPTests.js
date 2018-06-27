@@ -126,7 +126,6 @@ describe("Deletes a user from the system", function () {
                 password: "cool"
             })
             .end(function (err, res) {
-                console.log(res.text);
                 expect(res.status).to.be.equal(204);
                 done();
             });
@@ -235,7 +234,7 @@ describe("Change a users password", function () {
             .end(function (err, res) {
                 expect(res.status).to.be.equal(202);
                 expect(res.body).to.be.not.equal(ryan_auth_token);
-                ryan_auth_token = res.body;
+                ryan_auth_token = res.body.token;
                 done();
             });
     });
@@ -245,7 +244,7 @@ describe("Change a users password", function () {
 describe("Delete symptom", function () {
     it("should give status 204 if sucessful", function (done) {
         chai.request(app)
-            .put('/users/ryan/diseases/1/symptoms/1')
+            .delete('/users/ryan/diseases/1/symptoms/1')
             .query({
                 version: "1",
                 auth_token: ryan_auth_token
@@ -256,8 +255,6 @@ describe("Delete symptom", function () {
             });
     });
 });
-
-/*
 
 describe("Add symptom", function () {
     it("should give status 204 if sucessful", function (done) {
@@ -267,13 +264,17 @@ describe("Add symptom", function () {
                 version: "1",
                 auth_token: ryan_auth_token
             })
-            .send(4)
+            .send({
+                symID: 4
+            })
             .end(function (err, res) {
-                expect(res.status).to.be.equal(204);
+                expect(res.status).to.be.equal(200);
                 done();
             });
     });
 });
+
+/*
 
 describe("Get symptoms", function () {
     it("should return every symptom this user currently has", function (done) {
