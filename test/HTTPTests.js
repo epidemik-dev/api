@@ -10,21 +10,9 @@ var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 const app = require('../index').app;
+const reset = require('../index').reset;
 
-describe("Resets the database", function () {
-    it("should return status 204 if sucessful", function (done) {
-        chai.request(app)
-            .post('/reset')
-            .query({
-                auth_token: admin_auth_token
-            })
-            .send()
-            .end(function (err, res) {
-                expect(res.status).to.be.equal(204);
-                done();
-            });
-    });
-});
+reset();
 
 describe("Adds a user to the database", function () {
     it("should give status 201 if the adding was sucessful", function (done) {
@@ -118,6 +106,7 @@ describe("Adds a user to the database", function () {
             });
     });
 });
+/*
 describe("Deletes a user from the system", function () {
     it("should give status 204 if the deletion was sucessful", function (done) {
         chai.request(app)
@@ -134,7 +123,6 @@ describe("Deletes a user from the system", function () {
             });
     });
 });
-/*
 
 describe("Add diseases to the system", function () {
     it("should give status 204 if adding is sucessful", function (done) {

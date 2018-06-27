@@ -7,6 +7,7 @@ const UserDB = require('./database/UserDB.js');
 const DiseaseDB = require('./database/DiseaseDB.js');
 const AuthDB = require('./database/AuthDB.js');
 const TrendDB = require('./database/TrendDB.js');
+const ResetDB = require('./database/ResetDB.js');
 const http_responses = require('./helpers/http-responses.js'); // The file that handles sending the actual info 
 const main_router = require('./routers/main_router.js'); // The main router file that delegates to every sub URL
 
@@ -19,6 +20,8 @@ const userDB = new UserDB('EPIDEMIK_TEST');
 const diseaseDB = new DiseaseDB('EPIDEMIK_TEST');
 // The db used to change stuf related to trends
 const trendDB = new TrendDB("EPIDEMIK_TEST");
+// The db used to reset the app
+const resetDB = new ResetDB("EPIDEMIK_TEST")
 /****************************BEGIN DOING STUFF TO THE EXPRESS APP***************************/
 const app = express();
 
@@ -53,6 +56,12 @@ app.listen(3000, () => console.log('WHAM listening on port 3000!'));
 
 /************************STUFF FOR TESTING PURPOSES**********************************/
 
+// Void -> Promise(Void)
+function reset() {
+    return resetDB.reset_db();
+}
+
 module.exports = {
-    app: app
+    app: app,
+    reset: reset
 }; // for testing with chai
