@@ -7,6 +7,15 @@ function delete_disease(req, res) {
     });
 }
 
+function get_disease(req, res) {
+    req.diseaseDB.get_disease(req.params.userID, req.params.diseaseID).then(result => {
+        req.http_responses.report_sucess_with_info(req, res, result);
+    }).catch(error => {
+        req.http_responses.report_not_found(req, res);
+    });
+}
+
 module.exports = {
-    delete_disease: delete_disease
+    delete_disease: delete_disease,
+    get_disease: get_disease
 }

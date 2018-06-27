@@ -17,7 +17,16 @@ function change_password(req, res) {
     })
 }
 
+function get_info(req, res) {
+    req.userDB.get_specific_user_info(req.params.userID).then(result => {
+        req.http_responses.report_sucess_with_info(req, res, result);
+    }).catch(error => {
+        req.http_responses.report_not_found(req, res);
+    })
+}
+
 module.exports = {
     delete_user: delete_user,
-    change_password: change_password
+    change_password: change_password,
+    get_info: get_info
 }

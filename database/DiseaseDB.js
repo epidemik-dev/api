@@ -13,6 +13,8 @@ const am_healthy_sql = "UPDATE DISEASE_POINTS SET date_healthy = ? WHERE date_he
 
 const get_user_symptoms = "SELECT symID FROM DISSYM, DISEASE_POINTS WHERE id = diseaseID AND date_healthy IS NULL AND username = ?";
 const get_disease_symptoms = "SELECT symID FROM DISSYM WHERE diseaseID = ?";
+const get_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
+const get_user_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE username = ? ORDER BY id";
 
 class DiseaseDB {
 
@@ -107,12 +109,6 @@ class DiseaseDB {
             var res = connection.query(get_sym_query);
             connection.release();
             return res;
-        }).then(results => {
-            var toReturn = [];
-            for (var i in results) {
-                toReturn.push(results[i]);
-            }
-            return toReturn;
         });
     }
 
@@ -124,10 +120,66 @@ class DiseaseDB {
             var res = connection.query(get_sym_query);
             connection.release();
             return res;
-        }).then(results => {
+        });
+    }
+
+    // String String -> Promise(Disease)
+    // Returns the information for this specific disease
+    get_disease(userID, diseaseID) {
+        var get_disease_query = mysql.format(get_disease_sql, [diseaseID, userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_disease_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            if(result.length === 0) {
+                throw new Error("Disease not found");
+            }
+            var toReturn = {};
+            var syms = [];
+            for(var i in result) {
+                syms.push({symID: result[i].symID});
+            }
+            toReturn.disease_name = result[0].disease_name;
+            toReturn.date_sick = result[0].date;
+            toReturn.date_healthy = result[0].date_healthy;
+            toReturn.symptoms = syms;
+            return toReturn;
+        });
+    }
+
+    // String -> Promise([List-of Disease])
+    // Returns every disease point that this person has experienced
+    get_all_disease_for(userID) {
+        var get_disease_query = mysql.format(get_user_disease_sql, [userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_disease_query);
+            connection.release();
+            return res;
+        }).then(result => {
             var toReturn = [];
-            for (var i in results) {
-                toReturn.push(results[i]);
+            var cur_disease = undefined;
+            var cur_syms = [];
+            var last_id = -1;
+            for(var i in result) {
+                if(result[i].id !== last_id) {
+                    if(last_id !== -1) {
+                        cur_disease.symptoms = cur_syms;
+                        toReturn.push(cur_disease);
+                    }
+                    last_id = result[i].id;
+                    cur_syms = [];
+                    cur_disease = {
+                        disease_name: result[i].disease_name,
+                        date_sick: result[i].date,
+                        date_healthy: result[i].date_healthy
+                    };
+                }
+                cur_syms.push({symID: result[i].symID});
+            }
+            if(cur_disease !== undefined) {
+                cur_disease.symptoms = cur_syms;
+                toReturn.push(cur_disease);
             }
             return toReturn;
         });

@@ -302,7 +302,6 @@ describe("Get symptoms", function () {
     });
 });
 
-/*
 
 describe("Get specific disease", function () {
     it("should return all info about this users diseases", function (done) {
@@ -315,9 +314,9 @@ describe("Get specific disease", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal({
                     disease_name: 'Common-Cold',
-                    date_sick: '2018-05-20',
+                    date_sick: '2018-05-20T04:00:00.000Z',
                     date_healthy: null,
-                    symptoms: [1, 2, 3]
+                    symptoms: [{symID: 2}, {symID: 3}, {symID: 4}]
                 });
                 done();
             });
@@ -330,14 +329,14 @@ describe("Get all user disease", function () {
             .get('/users/cole/diseases')
             .query({
                 version: "1",
-                auth_token: ryan_auth_token
+                auth_token: cole_auth_token
             })
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal([{
                     disease_name: 'Flu',
-                    date_sick: '2018-05-23',
-                    date_healthy: '2018-05-25',
-                    symptoms: [2, 3]
+                    date_sick: '2018-05-23T04:00:00.000Z',
+                    date_healthy: '2018-05-25T04:00:00.000Z',
+                    symptoms: [{symID:2}, {symID:3}]
                 }]);
                 done();
             });
@@ -348,7 +347,7 @@ describe("Get all user disease", function () {
             .get('/users/brynn/diseases')
             .query({
                 version: "1",
-                auth_token: ryan_auth_token
+                auth_token: brynn_auth_token
             })
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal([]);
@@ -358,7 +357,7 @@ describe("Get all user disease", function () {
 });
 
 describe("All Users Info", function () {
-    it("should return all info about this user", function () {
+    it("should return all info about this user", function (done) {
         chai.request(app)
             .get('/users/cole')
             .query({
@@ -367,23 +366,23 @@ describe("All Users Info", function () {
             })
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal({
-                    username: "cole",
                     latitude: 2,
                     longitude: 2,
-                    deviceID: "co msds",
-                    date_of_birth: "1998-03-12",
+                    date_of_birth: "1998-03-12T05:00:00.000Z",
                     gender: "Male",
                     diseases: [{
                         disease_name: 'Flu',
-                        date_sick: '2018-05-23',
-                        date_healthy: '2018-05-25',
-                        symptoms: [2, 3]
+                        date_sick: '2018-05-23T04:00:00.000Z',
+                        date_healthy: '2018-05-25T04:00:00.000Z',
+                        symptoms: [{symID:2}, {symID:3}]
                     }]
                 });
                 done();
             });
     });
 });
+
+/*
 
 describe("Get all Users", function () {
     it("should return the info for every user", function () {

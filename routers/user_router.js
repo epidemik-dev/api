@@ -19,12 +19,18 @@ user_route.param('userID', auth_helpers.canViewUser);
 user_route.delete('/:userID', single_user.delete_user);
 // Changes this users pasword
 user_route.put('/:userID', single_user.change_password);
+// Returns all info about this user
+user_route.get('/:userID', single_user.get_info);
 // Add a disease to their account
 user_route.post('/:userID/diseases', user_diseases.add_disease);
 // Say they are healthy
 user_route.patch('/:userID/diseases', user_diseases.mark_healthy);
+// Returns all of this users diseases
+user_route.get('/:userID/diseases', user_diseases.get_all_disease);
 // Delete a disease and associated info
 user_route.delete('/:userID/diseases/:diseaseID', single_disease.delete_disease);
+// Returns all info about this infection
+user_route.get('/:userID/diseases/:diseaseID', single_disease.get_disease);
 // Gets the symptoms for this disease
 user_route.get('/:userID/diseases/:diseaseID/symptoms', disease_symptoms.get_symptoms);
 // Delete this symptom point

@@ -19,7 +19,16 @@ function mark_healthy(req, res) {
     })
 }
 
+function get_all_disease(req, res) {
+    req.diseaseDB.get_all_disease_for(req.params.userID).then(result => {
+        req.http_responses.report_sucess_with_info(req, res, result);
+    }).catch(error => {
+        req.http_responses.report_not_found(req, res);
+    })
+}
+
 module.exports = {
     add_disease: add_disease,
-    mark_healthy: mark_healthy
+    mark_healthy: mark_healthy,
+    get_all_disease: get_all_disease
 }

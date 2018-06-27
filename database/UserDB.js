@@ -13,6 +13,10 @@ const delete_user_sql = `DELETE FROM USERS where username = ?`
 
 const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
 
+const get_indiv_user_sql = `SELECT * FROM USERS LEFT JOIN 
+                                            (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
+                                             on USERS.username = DISEASE_POINTS.username
+                            WHERE USERS.username = ? ORDER BY id`;
 
 class UserDB {
 
@@ -29,6 +33,8 @@ class UserDB {
     // Adds a user based on this information to the database
     // Returns the users JWT when done
     add_user(deviceID, username, unencrypt_password, latitude, longitude, dob, gender) {
+        latitude = latitude - latitude % process.env.ERR_RANGE + Number(process.env.ERR_RANGE);
+        longitude = longitude - longitude % process.env.ERR_RANGE + Number(process.env.ERR_RANGE);
         var salt = bcrypt.genSaltSync(saltRounds);
         var password = bcrypt.hashSync(unencrypt_password, salt);
         var add_user_query = mysql.format(add_user_sql, [deviceID, latitude, longitude, username, password, salt, new Date(), dob, gender]);
@@ -88,6 +94,52 @@ class UserDB {
                 expiresIn: '10d'
             });
             return token
+        });
+    }
+
+    // String -> Promise(User)
+    // Returns all info about this user
+    get_specific_user_info(userID) {
+        var get_user_query = mysql.format(get_indiv_user_sql, [userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_user_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            var toReturn = {};
+            var cur_disease = undefined;
+            var cur_syms = [];
+            var last_id = -1;
+            if(result.length === 0) {
+                throw new Error("User not found");
+            }
+            toReturn.latitude = Number(result[0].latitude);
+            toReturn.longitude = Number(result[0].longitude);
+            toReturn.date_of_birth = result[0].dob;
+            toReturn.gender = result[0].gender;
+            var diseases = []
+            for(var i in result) {
+                if(result[i].id !== last_id) {
+                    if(last_id !== -1) {
+                        cur_disease.symptoms = cur_syms;
+                        diseases.push(cur_disease);
+                    }
+                    last_id = result[i].id;
+                    cur_syms = [];
+                    cur_disease = {
+                        disease_name: result[i].disease_name,
+                        date_sick: result[i].date,
+                        date_healthy: result[i].date_healthy
+                    };
+                }
+                cur_syms.push({symID: result[i].symID});
+            }
+            if(cur_disease !== undefined) {
+                cur_disease.symptoms = cur_syms;
+                diseases.push(cur_disease);
+            }
+            toReturn.diseases = diseases;
+            return toReturn;
         });
     }
 
