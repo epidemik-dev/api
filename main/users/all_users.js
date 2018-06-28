@@ -6,6 +6,10 @@ function add_user(req, res) {
     var longitude = req.body.longitude;
     var gender = req.body.gender;
     var dob = req.body.date_of_birth;
+    if(unencrypt_password === 'password' || unencrypt_password.length < 8 || unencrypt_password.includes(" ") || username.includes(" ") || username.includes("/")) {
+        req.http_responses.report_fail_with_message(req, res, "Bad password/username");
+        return;
+    }
     req.userDB.add_user(deviceID, username, unencrypt_password, latitude, longitude, dob, gender).then(token => {
         req.authDB.addUserRoles(username, username)
         req.authDB.allow(username, username, '*') // this user can do anything to themselves they want

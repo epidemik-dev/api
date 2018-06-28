@@ -54,7 +54,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'brynn',
-                password: 'password',
+                password: 'godpassword',
                 latitude: 1,
                 longitude: 1,
                 deviceID: "aslknfoi j",
@@ -75,7 +75,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'cole',
-                password: 'cool',
+                password: 'godpassword',
                 latitude: 2,
                 longitude: 2,
                 deviceID: "co msds",
@@ -97,7 +97,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'to_delete',
-                password: 'cool',
+                password: 'godpassword',
                 latitude: 2,
                 longitude: 2,
                 deviceID: "co msds",

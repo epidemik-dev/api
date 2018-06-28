@@ -23,6 +23,112 @@ describe("Resets the database", function () {
 });
 
 describe("Adds a user to the database", function () {
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: 'ryan',
+                password: 'as',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                ryan_auth_token = res.body.token;
+                done();
+            });
+    });
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: 'ryan',
+                password: 'password',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                ryan_auth_token = res.body.token;
+                done();
+            });
+    });
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: '/ryan',
+                password: 'godpassword',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                ryan_auth_token = res.body.token;
+                done();
+            });
+    });
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: 'r yan',
+                password: 'godpassword',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                ryan_auth_token = res.body.token;
+                done();
+            });
+    });
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: 'ryan',
+                password: 'bad password',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                ryan_auth_token = res.body.token;
+                done();
+            });
+    });
+
     it("should give status 201 if the adding was sucessful", function (done) {
         chai.request(app)
             .post('/users')
@@ -45,6 +151,27 @@ describe("Adds a user to the database", function () {
             });
     });
 
+    it("should give status 403 if the adding was unsucessful", function (done) {
+        chai.request(app)
+            .post('/users')
+            .query({
+                version: "1"
+            })
+            .send({
+                username: 'ryan',
+                password: 'test_password',
+                latitude: 0,
+                longitude: 0,
+                deviceID: "askjndskasjndkjasn",
+                date_of_birth: "1999-05-05",
+                gender: "Male"
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(403);
+                done();
+            });
+    });
+
     it("should give status 201 if the adding was sucessful", function (done) {
         chai.request(app)
             .post('/users')
@@ -53,7 +180,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'brynn',
-                password: 'password',
+                password: 'godpassword',
                 latitude: 1,
                 longitude: 1,
                 deviceID: "aslknfoi j",
@@ -75,7 +202,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'cole',
-                password: 'cool',
+                password: 'godpassword',
                 latitude: 2,
                 longitude: 2,
                 deviceID: "co msds",
@@ -97,7 +224,7 @@ describe("Adds a user to the database", function () {
             })
             .send({
                 username: 'to_delete',
-                password: 'cool',
+                password: 'godpassword',
                 latitude: 2,
                 longitude: 2,
                 deviceID: "co msds",
@@ -119,7 +246,7 @@ describe("Login", function () {
             .query({
                 version: "1",
                 auth_token: to_delete_auth_token,
-                password: "cool",
+                password: "godpassword",
                 username: "cole"
             })
             .end(function (err, res) {
