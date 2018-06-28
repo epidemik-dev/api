@@ -13,8 +13,8 @@ const app = require('../index').app;
 const reset = require('../index').reset;
 
 
-describe("Resets the database", function() {
-    it("should not error", function(done) {
+describe("Resets the database", function () {
+    it("should not error", function (done) {
         reset().then(admin_token => {
             admin_auth_token = admin_token;
             expect(admin_auth_token).to.be.a('string');
@@ -283,7 +283,13 @@ describe("Get symptoms", function () {
                 auth_token: ryan_auth_token
             })
             .end(function (err, res) {
-                expect(res.body).to.be.deep.equal([{symID: 2}, {symID: 3}, {symID: 4}]);
+                expect(res.body).to.be.deep.equal([{
+                    symID: 2
+                }, {
+                    symID: 3
+                }, {
+                    symID: 4
+                }]);
                 done();
             });
     });
@@ -296,7 +302,13 @@ describe("Get symptoms", function () {
                 auth_token: ryan_auth_token
             })
             .end(function (err, res) {
-                expect(res.body).to.be.deep.equal([{symID: 2}, {symID: 3}, {symID: 4}]);
+                expect(res.body).to.be.deep.equal([{
+                    symID: 2
+                }, {
+                    symID: 3
+                }, {
+                    symID: 4
+                }]);
                 done();
             });
     });
@@ -316,7 +328,13 @@ describe("Get specific disease", function () {
                     disease_name: 'Common-Cold',
                     date_sick: '2018-05-20T04:00:00.000Z',
                     date_healthy: null,
-                    symptoms: [{symID: 2}, {symID: 3}, {symID: 4}]
+                    symptoms: [{
+                        symID: 2
+                    }, {
+                        symID: 3
+                    }, {
+                        symID: 4
+                    }]
                 });
                 done();
             });
@@ -336,7 +354,11 @@ describe("Get all user disease", function () {
                     disease_name: 'Flu',
                     date_sick: '2018-05-23T04:00:00.000Z',
                     date_healthy: '2018-05-25T04:00:00.000Z',
-                    symptoms: [{symID:2}, {symID:3}]
+                    symptoms: [{
+                        symID: 2
+                    }, {
+                        symID: 3
+                    }]
                 }]);
                 done();
             });
@@ -374,7 +396,11 @@ describe("All Users Info", function () {
                         disease_name: 'Flu',
                         date_sick: '2018-05-23T04:00:00.000Z',
                         date_healthy: '2018-05-25T04:00:00.000Z',
-                        symptoms: [{symID:2}, {symID:3}]
+                        symptoms: [{
+                            symID: 2
+                        }, {
+                            symID: 3
+                        }]
                     }]
                 });
                 done();
@@ -382,10 +408,8 @@ describe("All Users Info", function () {
     });
 });
 
-/*
-
 describe("Get all Users", function () {
-    it("should return the info for every user", function () {
+    it("should return the info for every user", function (done) {
         chai.request(app)
             .get('/users')
             .query({
@@ -395,40 +419,44 @@ describe("Get all Users", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal(
                     [{
-                            username: "cole",
+                            latitude: 1,
+                            longitude: 1,
+                            date_of_birth: "1999-12-03T05:00:00.000Z",
+                            gender: "Female",
+                            diseases: []
+                        },
+                        {
                             latitude: 2,
                             longitude: 2,
-                            deviceID: "co msds",
-                            date_of_birth: "1998-03-12",
+                            date_of_birth: "1998-03-12T05:00:00.000Z",
                             gender: "Male",
                             diseases: [{
                                 disease_name: 'Flu',
-                                date_sick: '2018-05-23',
-                                date_healthy: '2018-05-25',
-                                symptoms: [2, 3]
+                                date_sick: '2018-05-23T04:00:00.000Z',
+                                date_healthy: '2018-05-25T04:00:00.000Z',
+                                symptoms: [{
+                                    symID: 2
+                                }, {
+                                    symID: 3
+                                }]
                             }]
                         },
                         {
-                            username: "brynn",
-                            latitude: 1,
-                            longitude: 1,
-                            deviceID: "aslknfoi j",
-                            date_of_birth: "1999-12-03",
-                            gender: "Female",
-                            diseases: [{}]
-                        },
-                        {
-                            username: "ryan",
-                            latitude: 0,
-                            longitude: 0,
-                            deviceID: "askjndskasjndkjasn",
-                            date_of_birth: "1999-05-05",
+                            latitude: 0.01,
+                            longitude: 0.01,
+                            date_of_birth: "1999-05-05T04:00:00.000Z",
                             gender: "Male",
                             diseases: [{
                                 disease_name: 'Common-Cold',
-                                date_sick: '2018-05-20',
+                                date_sick: '2018-05-20T04:00:00.000Z',
                                 date_healthy: null,
-                                symptoms: [1, 2, 3]
+                                symptoms: [{
+                                    symID: 2
+                                }, {
+                                    symID: 3
+                                }, {
+                                    symID: 4
+                                }]
                             }]
                         }
                     ]);
@@ -436,6 +464,8 @@ describe("Get all Users", function () {
             });
     });
 });
+
+/*
 
 describe("Gets all diseases", function () {
     it("should return the information for every still-sick disease", function (done) {

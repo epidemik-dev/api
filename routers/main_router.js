@@ -9,11 +9,15 @@ const trend_router = require('../routers/trend_router.js');
 
 const main_route = express.Router();
 
-main_route.post("/users", all_users.add_user);
+const auth_helpers = require('../helpers/auth_helpers.js');
 
+main_route.use(auth_helpers.verifyVersion);
 // Logs this patient
 // Will give back the users authenticaiton token
 main_route.post('/login',login.login_user);
+
+// Adds a user to the database
+main_route.post("/users", all_users.add_user);
 
 // Sets the router for /users
 main_route.use('/users',user_router);

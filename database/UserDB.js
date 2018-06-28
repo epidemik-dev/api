@@ -14,9 +14,16 @@ const delete_user_sql = `DELETE FROM USERS where username = ?`
 const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
 
 const get_indiv_user_sql = `SELECT * FROM USERS LEFT JOIN 
-                                            (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
-                                             on USERS.username = DISEASE_POINTS.username
-                            WHERE USERS.username = ? ORDER BY id`;
+(DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
+ON USERS.username = DISEASE_POINTS.username
+WHERE USERS.username = ? ORDER BY id`;
+const get_all_users_sql =
+    `SELECT USERS.username, latitude, longitude, dob, gender, date, disease_name, date_healthy, diseaseID, symID
+FROM USERS LEFT JOIN 
+(DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
+ON USERS.username = DISEASE_POINTS.username
+WHERE NOT(USERS.username = 'admin')
+ORDER BY USERS.username, id`
 
 class UserDB {
 
@@ -67,7 +74,8 @@ class UserDB {
             var res = Promise.all([connection.query(delete_symptom_query),
                 connection.query(delete_disease_query),
                 connection.query(delete_bus_query),
-                connection.query(delete_user_query)])
+                connection.query(delete_user_query)
+            ])
             connection.release();
             return res;
         })
@@ -108,9 +116,8 @@ class UserDB {
         }).then(result => {
             var toReturn = {};
             var cur_disease = undefined;
-            var cur_syms = [];
-            var last_id = -1;
-            if(result.length === 0) {
+            var last_id = undefined;
+            if (result.length === 0) {
                 throw new Error("User not found");
             }
             toReturn.latitude = Number(result[0].latitude);
@@ -118,27 +125,80 @@ class UserDB {
             toReturn.date_of_birth = result[0].dob;
             toReturn.gender = result[0].gender;
             var diseases = []
-            for(var i in result) {
-                if(result[i].id !== last_id) {
-                    if(last_id !== -1) {
-                        cur_disease.symptoms = cur_syms;
+            for (var i in result) {
+                if (result[i].id !== last_id) {
+                    if (last_id !== undefined) {
                         diseases.push(cur_disease);
                     }
                     last_id = result[i].id;
-                    cur_syms = [];
                     cur_disease = {
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
-                        date_healthy: result[i].date_healthy
+                        date_healthy: result[i].date_healthy,
+                        symptoms: []
                     };
                 }
-                cur_syms.push({symID: result[i].symID});
+                cur_disease.symptoms.push({
+                    symID: result[i].symID
+                });
             }
-            if(cur_disease !== undefined) {
-                cur_disease.symptoms = cur_syms;
+            if (cur_disease !== undefined) {
                 diseases.push(cur_disease);
             }
             toReturn.diseases = diseases;
+            return toReturn;
+        });
+    }
+
+    get_all_users() {
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_all_users_sql);
+            connection.release();
+            return res;
+        }).then(result => {
+            var toReturn = []
+            var cur_user = undefined;
+            var cur_disease = undefined;
+            var last_user_id = undefined;
+            var last_disease_id = undefined;
+            for (var i in result) {
+                if (result[i].diseaseID !== null && result[i].diseaseID !== last_disease_id) {
+                    if (last_disease_id !== undefined) {
+                        cur_user.diseases.push(cur_disease);
+                    }
+                    last_disease_id = result[i].diseaseID;
+                    cur_disease = {
+                        disease_name: result[i].disease_name,
+                        date_sick: result[i].date,
+                        date_healthy: result[i].date_healthy,
+                        symptoms: []
+                    };
+                }
+                if (result[i].username !== last_user_id) {
+                    if (cur_user !== undefined) {
+                        toReturn.push(cur_user);
+                    }
+                    last_user_id = result[i].username;
+                    cur_user = {
+                        latitude: Number(result[i].latitude),
+                        longitude: Number(result[i].longitude),
+                        date_of_birth: result[i].dob,
+                        gender: result[i].gender,
+                        diseases: []
+                    }
+                }
+                if (cur_disease !== undefined && result[i].symID !== null) {
+                    cur_disease.symptoms.push({
+                        symID: result[i].symID
+                    });
+                }
+            }
+            if (cur_disease !== undefined) {
+                cur_user.diseases.push(cur_disease);
+            }
+            if (cur_user !== undefined) {
+                toReturn.push(cur_user);
+            }
             return toReturn;
         });
     }

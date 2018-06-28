@@ -31,8 +31,13 @@ function verifyJWT(req, res, next) {
     });
 }
 
+function verifyVersion(req, res, next) {
+    next();
+}
+
 module.exports = {
     verifyJWT: verifyJWT,
     canViewUser: canViewUser,
-    canEditUser: canEditUser
+    canEditUser: canEditUser,
+    verifyVersion: verifyVersion
 }

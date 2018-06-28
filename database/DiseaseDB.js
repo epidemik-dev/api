@@ -159,26 +159,23 @@ class DiseaseDB {
         }).then(result => {
             var toReturn = [];
             var cur_disease = undefined;
-            var cur_syms = [];
-            var last_id = -1;
+            var last_id = undefined;
             for(var i in result) {
                 if(result[i].id !== last_id) {
-                    if(last_id !== -1) {
-                        cur_disease.symptoms = cur_syms;
+                    if(last_id !== undefined) {
                         toReturn.push(cur_disease);
                     }
                     last_id = result[i].id;
-                    cur_syms = [];
                     cur_disease = {
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
-                        date_healthy: result[i].date_healthy
+                        date_healthy: result[i].date_healthy,
+                        symptoms: []
                     };
                 }
-                cur_syms.push({symID: result[i].symID});
+                cur_disease.symptoms.push({symID: result[i].symID});
             }
             if(cur_disease !== undefined) {
-                cur_disease.symptoms = cur_syms;
                 toReturn.push(cur_disease);
             }
             return toReturn;

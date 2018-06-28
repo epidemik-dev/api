@@ -8,11 +8,14 @@ const single_disease = require('../main/users/id/diseases/id/single_disease.js')
 const single_symptom = require('../main/users/id/diseases/id/symptoms/id/single_symptom.js');
 const user_symptoms = require('../main/users/id/symptoms/user_symptoms.js');
 const disease_symptoms = require('../main/users/id/diseases/id/symptoms/disease_symptoms.js');
+const all_users = require("../main/users/all_users.js")
 
 const user_route = express.Router();
 
 user_route.use(auth_helpers.verifyJWT);
 
+// Returns every users info
+user_route.get("/", all_users.get_all_users);
 // If these params are present, these helpers should be run
 user_route.param('userID', auth_helpers.canViewUser);
 // Delete themselves and all their info
