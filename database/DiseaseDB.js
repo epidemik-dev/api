@@ -16,6 +16,16 @@ const get_disease_symptoms = "SELECT symID FROM DISSYM WHERE diseaseID = ?";
 const get_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
 const get_user_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE username = ? ORDER BY id";
 
+const get_all_diseases_sql = 
+`SELECT * FROM 
+USERS JOIN (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id) 
+ON USERS.username = DISEASE_POINTS.username
+WHERE latitude >= ? 
+AND latitude <=   ?
+AND longitude >=  ?
+AND longitude <=  ?
+AND date_healthy IS NULL`
+
 class DiseaseDB {
 
     constructor(db_name) {
@@ -154,6 +164,39 @@ class DiseaseDB {
         var get_disease_query = mysql.format(get_user_disease_sql, [userID]);
         return this.pool.getConnection().then(connection => {
             var res = connection.query(get_disease_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            var toReturn = [];
+            var cur_disease = undefined;
+            var last_id = undefined;
+            for(var i in result) {
+                if(result[i].id !== last_id) {
+                    if(last_id !== undefined) {
+                        toReturn.push(cur_disease);
+                    }
+                    last_id = result[i].id;
+                    cur_disease = {
+                        disease_name: result[i].disease_name,
+                        date_sick: result[i].date,
+                        date_healthy: result[i].date_healthy,
+                        symptoms: []
+                    };
+                }
+                cur_disease.symptoms.push({symID: result[i].symID});
+            }
+            if(cur_disease !== undefined) {
+                toReturn.push(cur_disease);
+            }
+            return toReturn;
+        });
+    }
+
+    // Number Number Number Number -> Promise([List-of Disease])
+    get_all_diseases(lat_min, lat_max, long_min, long_max) {
+        var get_all_diseases_query = mysql.format(get_all_diseases_sql, [lat_min, lat_max, long_min, long_max]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_all_diseases_query);
             connection.release();
             return res;
         }).then(result => {

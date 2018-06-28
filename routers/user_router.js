@@ -1,5 +1,4 @@
 const express = require('express');
-
 const auth_helpers = require('../helpers/auth_helpers.js');
 
 const single_user = require('../main/users/id/single_user.js');
@@ -15,7 +14,7 @@ const user_route = express.Router();
 user_route.use(auth_helpers.verifyJWT);
 
 // Returns every users info
-user_route.get("/", all_users.get_all_users);
+user_route.get("/", auth_helpers.hasAdminPriv, all_users.get_all_users);
 // If these params are present, these helpers should be run
 user_route.param('userID', auth_helpers.canViewUser);
 // Delete themselves and all their info

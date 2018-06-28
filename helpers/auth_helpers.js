@@ -20,6 +20,14 @@ function canEditUser(req, res, next) {
     });
 }
 
+function hasAdminPriv(req, res, next) {
+    if(req.verified === 'admin') {
+        next();
+    } else {
+        req.http_responses.report_not_authorized(req, res);
+    }
+}
+
 
 // Vefifies the JWT and writes the info to the req
 function verifyJWT(req, res, next) {
@@ -39,5 +47,6 @@ module.exports = {
     verifyJWT: verifyJWT,
     canViewUser: canViewUser,
     canEditUser: canEditUser,
-    verifyVersion: verifyVersion
+    verifyVersion: verifyVersion,
+    hasAdminPriv: hasAdminPriv
 }

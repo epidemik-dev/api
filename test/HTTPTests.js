@@ -465,8 +465,6 @@ describe("Get all Users", function () {
     });
 });
 
-/*
-
 describe("Gets all diseases", function () {
     it("should return the information for every still-sick disease", function (done) {
         chai.request(app)
@@ -485,14 +483,17 @@ describe("Gets all diseases", function () {
                 expect(res.body).to.be.deep.equal(
                     [{
                         disease_name: 'Common-Cold',
-                        date_sick: '2018-05-20',
+                        date_sick: '2018-05-20T04:00:00.000Z',
                         date_healthy: null,
-                        symptoms: [1, 2, 3]
+                        symptoms: [{symID: 2}, {symID: 3}, {symID: 4}]
                     }]
                 )
+                done();
             });
     });
 });
+
+/*
 
 describe("Gets all diseases by name", function () {
     it("should return the information for every sick or not sick disease that matches this name", function (done) {
