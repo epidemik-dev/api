@@ -141,7 +141,7 @@ describe("Add diseases to the system", function () {
                 auth_token: ryan_auth_token
             })
             .send({
-                disease_name: 'Common-Cold',
+                disease_name: 'Common Cold',
                 date_sick: '2018-05-20',
                 date_healthy: null,
                 symptoms: [1, 2, 3]
@@ -179,7 +179,7 @@ describe("Add diseases to the system", function () {
                 auth_token: brynn_auth_token
             })
             .send({
-                disease_name: 'Common-Cold',
+                disease_name: 'Common Cold',
                 date_sick: '2018-05-25',
                 date_healthy: null,
                 symptoms: [2, 3, 5]
@@ -325,7 +325,7 @@ describe("Get specific disease", function () {
             })
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal({
-                    disease_name: 'Common-Cold',
+                    disease_name: 'Common Cold',
                     date_sick: '2018-05-20T04:00:00.000Z',
                     date_healthy: null,
                     symptoms: [{
@@ -447,7 +447,7 @@ describe("Get all Users", function () {
                             date_of_birth: "1999-05-05T04:00:00.000Z",
                             gender: "Male",
                             diseases: [{
-                                disease_name: 'Common-Cold',
+                                disease_name: 'Common Cold',
                                 date_sick: '2018-05-20T04:00:00.000Z',
                                 date_healthy: null,
                                 symptoms: [{
@@ -482,7 +482,7 @@ describe("Gets all diseases", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal(
                     [{
-                        disease_name: 'Common-Cold',
+                        disease_name: 'Common Cold',
                         date_sick: '2018-05-20T04:00:00.000Z',
                         date_healthy: null,
                         symptoms: [{symID: 2}, {symID: 3}, {symID: 4}]
@@ -492,8 +492,6 @@ describe("Gets all diseases", function () {
             });
     });
 });
-
-/*
 
 describe("Gets all diseases by name", function () {
     it("should return the information for every sick or not sick disease that matches this name", function (done) {
@@ -513,11 +511,12 @@ describe("Gets all diseases by name", function () {
                 expect(res.body).to.be.deep.equal(
                     [{
                         disease_name: 'Flu',
-                        date_sick: '2018-05-23',
-                        date_healthy: '2018-05-25',
-                        symptoms: [2, 3]
+                        date_sick: '2018-05-23T04:00:00.000Z',
+                        date_healthy: '2018-05-25T04:00:00.000Z',
+                        symptoms: [{symID: 2}, {symID: 3}]
                     }]
                 )
+                done();
             });
     });
 });
@@ -525,7 +524,7 @@ describe("Gets all diseases by name", function () {
 describe("Gets all information for a diseases symtoms", function () {
     it("should return a list of all symptoms experienced by people with this disease", function (done) {
         chai.request(app)
-            .get('/diseases/Common-Cold')
+            .get('/diseases/Common Cold/symptoms')
             .query({
                 version: "1",
                 auth_token: admin_auth_token,
@@ -539,9 +538,10 @@ describe("Gets all information for a diseases symtoms", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal(
                     [
-                        [2, 3, 4]
+                        [{symID: 2}, {symID: 3}, {symID: 4}]
                     ]
                 )
+                done();
             });
     });
 });
@@ -553,17 +553,64 @@ describe("Returns every trend in this users region", function () {
         .query({
             version: "1",
             auth_token: admin_auth_token,
-            region: {
-                latMin: -50,
-                longMin: -50,
-                latMax: 50,
-                longMax: 50
-            }
+            latitude: 2,
+            longitude: 2
         })
         .end(function (err, res) {
-            expect(res.body).to.be.deep.equal([])
+            expect(res.body).to.be.deep.equal([
+                {
+                    disease_name: "Flu",
+                    latitude: 2,
+                    longitude: 2,
+                    trend_weight: 2
+                }
+            ])
+            done();
         });
     });
 });
 
-*/
+describe("Returns the percent of users infected on dates", function() {
+    it("should give back the data", function(done) {
+        chai.request(app)
+        .get('/trends/historical')
+        .query({
+            version: "1",
+            auth_token: admin_auth_token,
+            latitude: 2,
+            longitude: 2,
+            disease_name: "Flu"
+        })
+        .end(function (err, res) {
+            expect(res.body).to.be.deep.equal([
+                {
+                    count: 1,
+                    date: "2018-05-23T04:00:00.000Z"
+                }
+            ])
+            done();
+        });
+    });
+});
+
+describe("Returns the trends for this users region", function() {
+    it("should give back the data", function(done) {
+        chai.request(app)
+        .get('/trends/cole')
+        .query({
+            version: "1",
+            auth_token: admin_auth_token
+        })
+        .end(function (err, res) {
+            expect(res.body).to.be.deep.equal([
+                {
+                    disease_name: "Flu",
+                    latitude: 2,
+                    longitude: 2,
+                    trend_weight: 2
+                }
+            ])
+            done();
+        });
+    });
+});

@@ -15,7 +15,6 @@ const get_user_symptoms = "SELECT symID FROM DISSYM, DISEASE_POINTS WHERE id = d
 const get_disease_symptoms = "SELECT symID FROM DISSYM WHERE diseaseID = ?";
 const get_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
 const get_user_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE username = ? ORDER BY id";
-
 const get_all_diseases_sql = 
 `SELECT * FROM 
 USERS JOIN (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id) 
@@ -25,6 +24,20 @@ AND latitude <=   ?
 AND longitude >=  ?
 AND longitude <=  ?
 AND date_healthy IS NULL`
+const get_specific_disease_sql = 
+`SELECT * FROM 
+USERS JOIN (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id) 
+ON USERS.username = DISEASE_POINTS.username
+WHERE latitude >= ? 
+AND latitude <=   ?
+AND longitude >=  ?
+AND longitude <=  ?
+AND disease_name = ?`
+const get_disease_name_symptoms = 
+`SELECT diseaseID, symID
+FROM DISSYM, DISEASE_POINTS
+WHERE diseaseID = id
+AND disease_name = ?`;
 
 class DiseaseDB {
 
@@ -224,7 +237,69 @@ class DiseaseDB {
             return toReturn;
         });
     }
+
+    // Number Number Number Number -> Promise([List-of Disease])
+    // Returns every disease where the name matches the given name
+    get_diseases_for_name(lat_min, lat_max, long_min, long_max, disease_name) {
+        var get_all_diseases_query = mysql.format(get_specific_disease_sql, [lat_min, lat_max, long_min, long_max, disease_name]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_all_diseases_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            var toReturn = [];
+            var cur_disease = undefined;
+            var last_id = undefined;
+            for(var i in result) {
+                if(result[i].id !== last_id) {
+                    if(last_id !== undefined) {
+                        toReturn.push(cur_disease);
+                    }
+                    last_id = result[i].id;
+                    cur_disease = {
+                        disease_name: result[i].disease_name,
+                        date_sick: result[i].date,
+                        date_healthy: result[i].date_healthy,
+                        symptoms: []
+                    };
+                }
+                cur_disease.symptoms.push({symID: result[i].symID});
+            }
+            if(cur_disease !== undefined) {
+                toReturn.push(cur_disease);
+            }
+            return toReturn;
+        });
+    }
     
+    // String -> Promise([List-of [List-of Symptom]])
+    get_disease_name_symptoms(disease_name) {
+        var get_all_symptoms_query = mysql.format(get_disease_name_symptoms, [disease_name]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(get_all_symptoms_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            var all_symptoms = [];
+            var cur_symptoms = undefined;
+            var last_disease_id = undefined;
+            for(var i in result) {
+                if(result[i].diseaseID !== last_disease_id) {
+                    last_disease_id = result[i].diseaseID;
+                    if(last_disease_id !== undefined && cur_symptoms !== undefined) {
+                        all_symptoms.push(cur_symptoms);
+                    }
+                    cur_symptoms = [];
+                }
+                cur_symptoms.push({symID: result[i].symID});
+            }
+            if(cur_symptoms !== undefined) {
+                all_symptoms.push(cur_symptoms);
+            }
+            return all_symptoms;
+        });
+    }
+
 
 }
 
