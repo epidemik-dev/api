@@ -94,6 +94,13 @@ types:
       longitude: 50.1
       trend_weight: 30.45
       disease_name: "Common Cold"
+  HistoricalTrend:
+    properties: 
+      percent: number
+      date: date-only
+    example:
+      percent: 0.50
+      date: "1999-06-12"
 
 /users:
   post:
@@ -199,6 +206,47 @@ types:
           body:
             application/json:
               type: string
+    patch:
+      description: Changes this users address.
+      queryParameters: 
+        latitude:
+          displayName: Latitude
+          type: string
+          description: The new latitude of the user
+          example: 1.0
+          required: true
+        longitude:
+          displayName: Longitude
+          type: string
+          description: The new longitude of the user
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        new_password:
+          displayName: New Password
+          type: string
+          description: The new password for the user account.
+          example: "password"
+          required: true
+
+      responses:
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        204:
+
 
     delete:
       description: Removes this user and all associated information.
@@ -673,10 +721,15 @@ types:
         description: The authorization token the user was given when they logged in.
         example: "#12akjcns&^sanus&^"
         required: true
-      region:
-        displayName: Query Region
-        type: Region
-        description: The region the user wishes to get data in.
+      latitude:
+        displayName: Latitude
+        type: number
+        description: The latitude the user wishes to get data in.
+        required: true
+      longitude:
+        displayName: Longitude
+        type: number
+        description: The longitude the user wishes to get data in.
         required: true
     responses: 
       426:
@@ -693,3 +746,76 @@ types:
         body:
           application/json:
             type: Trend[]
+  /{userID}:
+    get:
+      description: Returns information about all the disease trends in this users region
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+      responses: 
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: Trend[]
+  /historical:
+    get:
+      description: Returns information about all the historical infections in the users region
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+        latitude:
+          displayName: Latitude
+          type: number
+          description: The latitude the user wishes to get data in.
+          required: true
+        longitude:
+          displayName: Longitude
+          type: number
+          description: The longitude the user wishes to get data in.
+          required: true
+      responses: 
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: HistoricalTrend[]
+      

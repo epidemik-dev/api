@@ -12,6 +12,7 @@ const delete_bus_user_sql = `DELETE FROM BUSUSER WHERE uName = ? OR bName=  ?`;
 const delete_user_sql = `DELETE FROM USERS where username = ?`
 
 const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
+const change_address_sql = `UPDATE USERS SET latitude = ?, longitude = ? WHERE username = ?`;
 
 const get_indiv_user_sql = `SELECT * FROM USERS LEFT JOIN 
 (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
@@ -102,6 +103,19 @@ class UserDB {
                 expiresIn: '10d'
             });
             return token
+        });
+    }
+
+    // String Number Number -> Promise(Void)
+    // Changes this users address to the given one
+    change_address(userID, latitude, longitude) {
+        latitude =  Math.ceil(latitude * 100)/100;
+        longitude = Math.ceil(longitude * 100)/100;
+        var change_address_query = mysql.format(change_address_sql, [latitude, longitude, userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(change_address_query);
+            connection.release();
+            return res;
         });
     }
 

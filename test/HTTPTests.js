@@ -485,7 +485,13 @@ describe("Gets all diseases", function () {
                         disease_name: 'Common Cold',
                         date_sick: '2018-05-20T04:00:00.000Z',
                         date_healthy: null,
-                        symptoms: [{symID: 2}, {symID: 3}, {symID: 4}]
+                        symptoms: [{
+                            symID: 2
+                        }, {
+                            symID: 3
+                        }, {
+                            symID: 4
+                        }]
                     }]
                 )
                 done();
@@ -513,7 +519,11 @@ describe("Gets all diseases by name", function () {
                         disease_name: 'Flu',
                         date_sick: '2018-05-23T04:00:00.000Z',
                         date_healthy: '2018-05-25T04:00:00.000Z',
-                        symptoms: [{symID: 2}, {symID: 3}]
+                        symptoms: [{
+                            symID: 2
+                        }, {
+                            symID: 3
+                        }]
                     }]
                 )
                 done();
@@ -538,7 +548,13 @@ describe("Gets all information for a diseases symtoms", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal(
                     [
-                        [{symID: 2}, {symID: 3}, {symID: 4}]
+                        [{
+                            symID: 2
+                        }, {
+                            symID: 3
+                        }, {
+                            symID: 4
+                        }]
                     ]
                 )
                 done();
@@ -547,70 +563,81 @@ describe("Gets all information for a diseases symtoms", function () {
 });
 
 describe("Returns every trend in this users region", function () {
-    it("should return the trend info for this users region", function(done) {
+    it("should return the trend info for this users region", function (done) {
         chai.request(app)
-        .get('/trends')
-        .query({
-            version: "1",
-            auth_token: admin_auth_token,
-            latitude: 2,
-            longitude: 2
-        })
-        .end(function (err, res) {
-            expect(res.body).to.be.deep.equal([
-                {
+            .get('/trends')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token,
+                latitude: 2,
+                longitude: 2
+            })
+            .end(function (err, res) {
+                expect(res.body).to.be.deep.equal([{
                     disease_name: "Flu",
                     latitude: 2,
                     longitude: 2,
                     trend_weight: 2
-                }
-            ])
-            done();
-        });
+                }])
+                done();
+            });
     });
 });
 
-describe("Returns the percent of users infected on dates", function() {
-    it("should give back the data", function(done) {
+describe("Returns the percent of users infected on dates", function () {
+    it("should give back the data", function (done) {
         chai.request(app)
-        .get('/trends/historical')
-        .query({
-            version: "1",
-            auth_token: admin_auth_token,
-            latitude: 2,
-            longitude: 2,
-            disease_name: "Flu"
-        })
-        .end(function (err, res) {
-            expect(res.body).to.be.deep.equal([
-                {
-                    count: 1,
+            .get('/trends/historical')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token,
+                latitude: 2,
+                longitude: 2,
+                disease_name: "Flu"
+            })
+            .end(function (err, res) {
+                expect(res.body).to.be.deep.equal([{
+                    percent: 1,
                     date: "2018-05-23T04:00:00.000Z"
-                }
-            ])
-            done();
-        });
+                }])
+                done();
+            });
     });
 });
 
-describe("Returns the trends for this users region", function() {
-    it("should give back the data", function(done) {
+describe("Change address", function () {
+    it("should change the address of the given user", function (done) {
         chai.request(app)
-        .get('/trends/cole')
-        .query({
-            version: "1",
-            auth_token: admin_auth_token
-        })
-        .end(function (err, res) {
-            expect(res.body).to.be.deep.equal([
-                {
+            .patch('/users/cole')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token,
+                latitude: 3.09312,
+                longitude: 4.01921321
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(204);
+                done();
+            });
+    });
+});
+
+describe("Returns the trends for this users region", function () {
+    it("should give back the data", function (done) {
+        chai.request(app)
+            .get('/trends/cole')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token
+            })
+            .end(function (err, res) {
+                expect(res.body).to.be.deep.equal([{
                     disease_name: "Flu",
-                    latitude: 2,
-                    longitude: 2,
+                    latitude: 3.1,
+                    longitude: 4.02,
                     trend_weight: 2
-                }
-            ])
-            done();
-        });
+                }])
+                done();
+            });
     });
 });

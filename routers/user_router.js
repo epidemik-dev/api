@@ -21,6 +21,8 @@ user_route.param('userID', auth_helpers.canViewUser);
 user_route.delete('/:userID', single_user.delete_user);
 // Changes this users pasword
 user_route.put('/:userID', single_user.change_password);
+// Changes this users address
+user_route.patch('/:userID', single_user.change_address);
 // Returns all info about this user
 user_route.get('/:userID', single_user.get_info);
 // Add a disease to their account

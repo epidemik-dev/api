@@ -65,7 +65,7 @@ class TrendDB {
         });
     }
 
-    // String -> Promise([List-of {date: Date, count: Number}])
+    // String -> Promise([List-of {date: Date, percent: Number}])
     // Returns the percent of people infected with this disease over time
     get_historical_trends(lat, long, disease_name) {
         lat = Number(lat) - Number(lat % process.env.ERR_RANGE) + Number(process.env.ERR_RANGE);
@@ -138,7 +138,7 @@ function get_percent_infected(users, infections) {
     for (let infection of infections) {
         let user_counts = get_user_count_on(users, infection.time);
         toReturn.push({
-            count: infection.number / user_counts,
+            percent: infection.number / user_counts,
             date: infection.time
         });
     }
@@ -162,13 +162,13 @@ function get_user_count_on(user_counts, date) {
 function calculate_trend(percent_infected) {
     var average_infection = 0;
     for (let percent of percent_infected) {
-        average_infection += percent.count;
+        average_infection += percent.percent;
     }
     average_infection /= percent_infected.length;
     average_infection *= 5 / 8;
     var weight = 1;
     for (let percent of percent_infected) {
-        let dif = percent.count - average_infection;
+        let dif = percent.percent - average_infection;
         if (dif >= 0) {
             weight = Math.min(weight + Math.pow(weight, dif), 100);
         } else {
