@@ -40,7 +40,23 @@ function verifyJWT(req, res, next) {
 }
 
 function verifyVersion(req, res, next) {
-    next();
+    if(req.query.version === "0.01") {
+        req.http_responses.report_bad_version(req, res);
+    } else {
+        next();
+    }
+}
+
+function canViewDisease(req, res, next) {
+    if(req.verified === "admin") {
+        next();
+        return;
+    }
+    req.authDB.can_view_disease(req.params.userID, req.params.diseaseID).then(result => {
+        next();
+    }).catch(error => {
+        req.http_responses.report_not_authorized(req, res);
+    });
 }
 
 module.exports = {
@@ -48,5 +64,6 @@ module.exports = {
     canViewUser: canViewUser,
     canEditUser: canEditUser,
     verifyVersion: verifyVersion,
-    hasAdminPriv: hasAdminPriv
+    hasAdminPriv: hasAdminPriv,
+    canViewDisease: canViewDisease
 }

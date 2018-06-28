@@ -11,12 +11,14 @@ const all_users = require("../main/users/all_users.js")
 
 const user_route = express.Router();
 
+// Verifies the given JWT
 user_route.use(auth_helpers.verifyJWT);
+// If these params are present, these helpers should be run
+user_route.param('userID', auth_helpers.canViewUser);
+user_route.param('diseaseID', auth_helpers.canViewDisease);
 
 // Returns every users info
 user_route.get("/", auth_helpers.hasAdminPriv, all_users.get_all_users);
-// If these params are present, these helpers should be run
-user_route.param('userID', auth_helpers.canViewUser);
 // Delete themselves and all their info
 user_route.delete('/:userID', single_user.delete_user);
 // Changes this users pasword

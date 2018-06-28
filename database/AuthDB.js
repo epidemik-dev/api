@@ -12,6 +12,8 @@ const verify_user_password_sql = "SELECT * FROM USERS T where T.username = ? AND
 
 const get_user_sql = "SELECT * FROM USERS";
 
+const get_disease_sql = "SELECT * FROM DISEASE_POINTS WHERE username = ? AND id = ?";
+
 class AuthDB {
 
     constructor(db_name) {
@@ -146,6 +148,23 @@ class AuthDB {
     reset_self() {
         this.acl = new ACL(new ACL.memoryBackend());
         this.acl.allow('admin', '*', '*') // the admin can do anything
+    }
+
+    // String String -> Promise(Void)
+    // Checks if this user has the permission for this disease
+    can_view_disease(userID, diseaseID) {
+        var can_view_query = mysql.format(get_disease_sql, [userID, diseaseID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(can_view_query);
+            connection.release();
+            return res;
+        }).then(users => {
+            if(users.length == 0) {
+                throw new Error("Cannot view");
+            } else {
+                return;
+            }
+        });
     }
 
 }

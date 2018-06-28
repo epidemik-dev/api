@@ -163,7 +163,7 @@ types:
           application/json:
             type: string
           example: "Bad Authorization Token"
-      201:
+      200:
         body:
           application/json:
             type: User[]
@@ -818,4 +818,40 @@ types:
           body:
             application/json:
               type: HistoricalTrend[]
+/login:
+  post:
+    description: Returns the auth token if sucessful
+    queryParameters: 
+      version:
+        displayName: Version
+        type: string
+        description: The current version of the app the user is using.
+        example: 1.0
+        required: true
+      username:
+        displayName: Username
+        type: number
+        description: The username of the user.
+        required: true
+      password:
+        displayName: Password
+        type: number
+        description: The password of the user.
+        required: true
+    responses: 
+      426:
+        body:
+          application/json:
+            type: string
+          example: "Version out of date"
+      401:
+        body:
+          application/json:
+            type: string
+          example: "Incorrect login"
+      204:
+        body:
+          application/json:
+            type: string
+
       

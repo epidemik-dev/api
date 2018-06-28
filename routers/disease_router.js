@@ -8,6 +8,9 @@ const disease_symptoms = require('../main/diseases/id/symptoms/disease_symptoms.
 
 const disease_route = express.Router();
 
+// Verifies the given JWT
+disease_route.use(auth_helpers.verifyJWT);
+
 // Verifies the JWT
 disease_route.use(auth_helpers.verifyJWT);
 // Replaces - with space

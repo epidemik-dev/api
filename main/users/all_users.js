@@ -13,7 +13,6 @@ function add_user(req, res) {
             token: token
         })
     }).catch(error => {
-        throw error;
         req.http_responses.report_fail_with_message(req, res, "Username already used");
     })
 }

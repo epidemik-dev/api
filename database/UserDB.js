@@ -14,6 +14,8 @@ const delete_user_sql = `DELETE FROM USERS where username = ?`
 const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
 const change_address_sql = `UPDATE USERS SET latitude = ?, longitude = ? WHERE username = ?`;
 
+const get_user_salt_sql = `SELECT * FROM USERS WHERE username = ?`;
+const user_exists_sql = `SELECT * FROM USERS WHERE username = ? AND password = ?`;
 const get_indiv_user_sql = `SELECT * FROM USERS LEFT JOIN 
 (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
 ON USERS.username = DISEASE_POINTS.username
@@ -34,6 +36,40 @@ class UserDB {
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
             database: db_name
+        });
+    }
+
+    // String String -> Promise(String)
+    // Checks this users login and if sucessful gives a auth token
+    login_user(username, password) {
+        var get_salt_query = mysql.format(get_user_salt_sql, [username]);
+        var connection;
+        var password;
+        return this.pool.getConnection().then(con => {
+            connection = con;
+            return connection.query(get_salt_query);;
+        }).then(result => {
+            if(result.length == 0) {
+                connection.release();
+                throw new Error("User does not exist");
+            }
+            password = bcrypt.hashSync(password, result[0].salt);
+            var user_exists_query = mysql.format(user_exists_sql, [username, password]);
+            return connection.query(user_exists_query)
+        }).then(result => {
+            if(result.length > 0) {
+                var token = jwt.sign({
+                    data: {
+                        username: username,
+                        password_hash: password
+                    }
+                }, process.env.JWT_SECRET, {
+                    expiresIn: '10d'
+                });
+                return token;
+            } else {
+                throw new Error("Incorrect password");
+            }
         });
     }
 

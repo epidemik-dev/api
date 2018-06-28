@@ -71,7 +71,6 @@ class TrendDB {
         lat = Number(lat) - Number(lat % process.env.ERR_RANGE) + Number(process.env.ERR_RANGE);
         long = Number(long) - Number(long % process.env.ERR_RANGE) + Number(process.env.ERR_RANGE);
         return this.pool.getConnection().then(connection => {
-            console.log(lat, long, disease_name);
             var res = Promise.all([get_historical_number_of_users(lat, long, connection),
                 get_historical_number_of_infections(lat, long, disease_name, connection)])
                 connection.release();

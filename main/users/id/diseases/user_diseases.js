@@ -5,7 +5,7 @@ function add_disease(req, res) {
     var username = req.params.userID;
     var symptoms = req.body.symptoms;
     req.diseaseDB.add_disease(disease_name, date_sick, date_healthy, username, symptoms).then(result => {
-        req.http_responses.report_sucess_no_info(req, res);
+        req.http_responses.report_sucess_with_info(req, res, "Common Cold");
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     });

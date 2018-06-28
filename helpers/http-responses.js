@@ -4,52 +4,33 @@
 
 
 // Req Res -> Void
-// Sends the message to the user that they are
-// not authorized to view what they are trying to view
-function report_not_authorized(req, res) {
-    if (req.headers['accept'] === undefined) {
-        res.writeHead(403);
-        res.end();
-    } else if (req.headers['accept'].includes('text/html')) {
-        res.render('account/not-allowed');
-    } else if (req.headers['accept'].includes('application/json')) {
-        res.writeHead(403);
-        res.end();
-    }
-}
-
-// Req Res -> Void
 // Sends the message to the user that their auth token
 // is either a fake or expired (or some other reason that it couldn't be verified)
 function report_bad_token(req, res) {
-    res.writeHead(403);
-    res.end();
+    report_status(res, 403)
+    res.end(JSON.stringify("Bad Authorization Token"));
 }
 
 // Req Res -> Void
 // Sends the message to the user that the content they 
 // are trying to view does not exist
 function report_not_found(req, res) {
-    res.writeHead(403);
+    report_status(res, 403);
     res.end();
 }
 
 // Req Res -> Void
 // Tells the user that the request is not supported
 function report_request_not_supported(req, res) {
-    res.writeHead(403, {
-        "Content-Type": "application/json"
-    });
-    res.end();
+    report_status(res, 403);
+    res.end(JSON.stringify("Request not supported"));
 }
 
 // Req Res -> Void
 // Tells the user that their querry suceeded 
 // but we have nothing to give back
 function report_sucess_no_info(req, res) {
-    res.writeHead(204, {
-        'Content-Type': 'application/json',
-    });
+    report_status(res, 204);
     res.end();
 }
 
@@ -57,35 +38,41 @@ function report_sucess_no_info(req, res) {
 // Tells the user that their querry suceeded 
 // and we have something to give back
 function report_sucess_with_info(req, res, info) {
-    res.writeHead(200, {
-        'Content-Type': 'application/json',
-    });
+    report_status(res, 200);
     res.end(JSON.stringify(info));
 }
 
 // Req Res String -> Void
 // Gives error 403 with error: message
 function report_fail_with_message(req, res, message) {
-    res.writeHead(403, {
-        "Content-Type": "application/json"
-    });
-    res.end(JSON.stringify({
-        error: message
-    }));
+    report_status(res, 403);
+    res.end(JSON.stringify(message));
 }
 
 function report_creation_sucessful(req, res, info) {
-    res.writeHead(201, {
-        "Content-Type": "application/json"
-    });
+    report_status(res, 201);
     res.end(JSON.stringify(info));
 }
 
 function report_accepted(req, res, info) {
-    res.writeHead(202, {
+    report_status(res, 202);
+    res.end(JSON.stringify(info));
+}
+
+function report_not_authorized(req, res) {
+    report_status(res, 401);
+    res.end(JSON.stringify("Not authorized"));
+}
+
+function report_bad_version(req, res) {
+    report_status(res, 426);
+    res.end(JSON.stringify("Version out of date"));
+}
+
+function report_status(res, status_code) {
+    res.writeHead(status_code, {
         "Content-Type": "application/json"
     });
-    res.end(JSON.stringify(info));
 }
 
 module.exports = {
@@ -97,5 +84,6 @@ module.exports = {
     report_sucess_with_info: report_sucess_with_info,
     report_fail_with_message: report_fail_with_message,
     report_creation_sucessful: report_creation_sucessful,
-    report_accepted: report_accepted
+    report_accepted: report_accepted,
+    report_bad_version: report_bad_version
 };
