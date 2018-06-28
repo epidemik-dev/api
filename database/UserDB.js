@@ -27,6 +27,10 @@ FROM USERS LEFT JOIN
 ON USERS.username = DISEASE_POINTS.username
 WHERE NOT(USERS.username = 'admin')
 ORDER BY USERS.username, id`
+const get_user_current_sickness = 
+`SELECT * FROM DISEASE_POINTS
+WHERE date_healthy IS NULL
+AND username = ?`
 
 class UserDB {
 
@@ -252,7 +256,24 @@ class UserDB {
             return toReturn;
         });
     }
-
+    
+    // String -> Promise(Boolean)
+    // Returns whether or not this user is sick
+    // True if sick, false if healty
+    is_user_sick(userID) {
+        var is_sick_query = mysql.format(get_user_current_sickness, [userID]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(is_sick_query);
+            connection.release();
+            return res;
+        }).then(result => {
+            if(result.length === 0) {
+                return false;
+            } else {
+                return true;
+            }
+        })
+    }
 }
 
 module.exports = UserDB

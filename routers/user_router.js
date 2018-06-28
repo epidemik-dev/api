@@ -1,13 +1,14 @@
 const express = require('express');
 const auth_helpers = require('../helpers/auth_helpers.js');
 
+const all_users = require("../main/users/all_users.js")
 const single_user = require('../main/users/id/single_user.js');
 const user_diseases = require('../main/users/id/diseases/user_diseases.js');
 const single_disease = require('../main/users/id/diseases/id/single_disease.js');
 const single_symptom = require('../main/users/id/diseases/id/symptoms/id/single_symptom.js');
-const user_symptoms = require('../main/users/id/symptoms/user_symptoms.js');
 const disease_symptoms = require('../main/users/id/diseases/id/symptoms/disease_symptoms.js');
-const all_users = require("../main/users/all_users.js")
+const user_symptoms = require('../main/users/id/symptoms/user_symptoms.js');
+const current_sickness = require('../main/users/id/sickness/current_sickness.js');
 
 const user_route = express.Router();
 
@@ -45,5 +46,8 @@ user_route.delete('/:userID/diseases/:diseaseID/symptoms/:symID', single_symptom
 user_route.post('/:userID/symptoms', user_symptoms.add_symptom);
 // Adds a symptom to this users current list
 user_route.get('/:userID/symptoms', user_symptoms.get_symptoms);
+// Adds a symptom to this users current list
+user_route.get('/:userID/sickness', current_sickness.is_user_sick);
+
 
 module.exports = user_route;

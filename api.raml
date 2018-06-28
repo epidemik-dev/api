@@ -598,6 +598,38 @@ types:
             body:
               application/json:
                 type: Symptom[]
+    /sickness:
+      get:
+        description: Returns whether or not this user is sick (true if sick)
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: boolean
+
 
 /diseases:
   get:

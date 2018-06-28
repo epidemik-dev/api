@@ -212,6 +212,34 @@ describe("Mark a disease as healthy", function () {
     });
 });
 
+describe("Detect sickness", function() {
+    it("should give false if the user is sick", function(done) {
+        chai.request(app)
+            .get('/users/cole/sickness')
+            .query({
+                version: "1",
+                auth_token: cole_auth_token
+            })
+            .end(function (err, res) {
+                expect(res.body).to.be.equal(false);
+                done();
+            });
+    });
+
+    it("should give true if the user is sick", function(done) {
+        chai.request(app)
+            .get('/users/ryan/sickness')
+            .query({
+                version: "1",
+                auth_token: ryan_auth_token
+            })
+            .end(function (err, res) {
+                expect(res.body).to.be.equal(true);
+                done();
+            });
+    });
+})
+
 describe("Change a users password", function () {
     it("should return a different auth token than the one before", function (done) {
         chai.request(app)
