@@ -10,7 +10,7 @@ var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 
-const get_app = require('../index').get_app;
+const get_app = require('../main.js').get_app;
 const join = get_app("EPIDEMIK_TEST");
 const app = join[0];
 const reset = join[1];
