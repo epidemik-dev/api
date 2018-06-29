@@ -1,24 +1,24 @@
 require('dotenv').config();
 const mysql = require('promise-mysql');
 
-const add_disease_sql = "INSERT INTO DISEASE_POINTS (disease_name, date, date_healthy, username) VALUES (?, ?, ?, ?)";
-const add_symptom_sql = "INSERT INTO DISSYM VALUES (?, ?)";
-const add_sym_sql = "INSERT INTO DISSYM SELECT id, ? FROM DISEASE_POINTS WHERE username = ? AND date_healthy IS NULL";
+const add_disease_sql = "INSERT INTO DISEASE (disease_name, date, date_healthy, username) VALUES (?, ?, ?, ?)";
+const add_symptom_sql = "INSERT INTO DISEASE_SYMPTOM VALUES (?, ?)";
+const add_sym_sql = "INSERT INTO DISEASE_SYMPTOM SELECT id, ? FROM DISEASE WHERE username = ? AND date_healthy IS NULL";
 
-const delete_disease_sym_sql = "DELETE FROM DISSYM WHERE diseaseID = ?";
-const delete_disease_sql = "DELETE FROM DISEASE_POINTS WHERE id = ?";
-const delete_single_symptom_sql = "DELETE FROM DISSYM WHERE symID = ?";
+const delete_disease_sym_sql = "DELETE FROM DISEASE_SYMPTOM WHERE diseaseID = ?";
+const delete_disease_sql = "DELETE FROM DISEASE WHERE id = ?";
+const delete_single_symptom_sql = "DELETE FROM DISEASE_SYMPTOM WHERE symID = ?";
 
-const am_healthy_sql = "UPDATE DISEASE_POINTS SET date_healthy = ? WHERE date_healthy IS NULL AND username = ?";
+const am_healthy_sql = "UPDATE DISEASE SET date_healthy = ? WHERE date_healthy IS NULL AND username = ?";
 
-const get_user_symptoms = "SELECT symID FROM DISSYM, DISEASE_POINTS WHERE id = diseaseID AND date_healthy IS NULL AND username = ?";
-const get_disease_symptoms = "SELECT symID FROM DISSYM WHERE diseaseID = ?";
-const get_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
-const get_user_disease_sql = "SELECT * FROM DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id WHERE username = ? ORDER BY id";
+const get_user_symptoms = "SELECT symID FROM DISEASE_SYMPTOM, DISEASE WHERE id = diseaseID AND date_healthy IS NULL AND username = ?";
+const get_disease_symptoms = "SELECT symID FROM DISEASE_SYMPTOM WHERE diseaseID = ?";
+const get_disease_sql = "SELECT * FROM DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
+const get_user_disease_sql = "SELECT * FROM DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id WHERE username = ? ORDER BY id";
 const get_all_diseases_sql = 
 `SELECT * FROM 
-USERS JOIN (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id) 
-ON USERS.username = DISEASE_POINTS.username
+USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) 
+ON USER.username = DISEASE.username
 WHERE latitude >= ? 
 AND latitude <=   ?
 AND longitude >=  ?
@@ -26,8 +26,8 @@ AND longitude <=  ?
 AND date_healthy IS NULL`
 const get_specific_disease_sql = 
 `SELECT * FROM 
-USERS JOIN (DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id) 
-ON USERS.username = DISEASE_POINTS.username
+USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) 
+ON USER.username = DISEASE.username
 WHERE latitude >= ? 
 AND latitude <=   ?
 AND longitude >=  ?
@@ -35,7 +35,7 @@ AND longitude <=  ?
 AND disease_name = ?`
 const get_disease_name_symptoms = 
 `SELECT diseaseID, symID
-FROM DISSYM, DISEASE_POINTS
+FROM DISEASE_SYMPTOM, DISEASE
 WHERE diseaseID = id
 AND disease_name = ?`;
 

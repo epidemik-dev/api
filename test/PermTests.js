@@ -9,8 +9,11 @@ var expect = chai.expect;
 var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-const app = require('../index').app;
-const reset = require('../index').reset;
+
+const get_app = require('../index').get_app;
+const join = get_app("EPIDEMIK_TEST");
+const app = join[0];
+const reset = join[1];
 
 
 describe("Resets the database", function () {

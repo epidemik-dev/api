@@ -7,12 +7,12 @@ var jwt = require('jsonwebtoken');
 var ACL = require('acl');
 
 /********************SQL STATEMENTS*******************/
-const get_user_salt_sql = "SELECT salt FROM USERS T WHERE T.username = ?";
-const verify_user_password_sql = "SELECT * FROM USERS T where T.username = ? AND T.password = ?";
+const get_user_salt_sql = "SELECT salt FROM USER T WHERE T.username = ?";
+const verify_user_password_sql = "SELECT * FROM USER T where T.username = ? AND T.password = ?";
 
-const get_user_sql = "SELECT * FROM USERS";
+const get_user_sql = "SELECT * FROM USER";
 
-const get_disease_sql = "SELECT * FROM DISEASE_POINTS WHERE username = ? AND id = ?";
+const get_disease_sql = "SELECT * FROM DISEASE WHERE username = ? AND id = ?";
 
 class AuthDB {
 

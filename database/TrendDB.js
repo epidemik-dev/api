@@ -3,22 +3,22 @@ const mysql = require('promise-mysql');
 
 const get_all_disease_names_sql =
     `SELECT DISTINCT disease_name 
-FROM DISEASE_POINTS d, USERS u 
+FROM DISEASE d, USER u 
 WHERE u.username = d.username 
 AND ? = u.latitude AND ? = u.longitude`
 const get_number_of_users_on_dates_sql =
     `SELECT COUNT(*) as number,lod.date_reg as time
 FROM 
-(SELECT DISTINCT date_reg FROM USERS ORDER BY date_reg) lod, 
-USERS u 
+(SELECT DISTINCT date_reg FROM USER ORDER BY date_reg) lod, 
+USER u 
 WHERE lod.date_reg >= u.date_reg 
 AND ? = u.latitude 
 AND ? = u.longitude 
 GROUP BY lod.date_reg`
 const get_number_of_infections_on_dates_sql =
     `SELECT COUNT(*) as number,lod.date as time
-FROM (SELECT DISTINCT date FROM DISEASE_POINTS WHERE disease_name = ? ORDER BY DATE) lod,
-DISEASE_POINTS d, USERS u
+FROM (SELECT DISTINCT date FROM DISEASE WHERE disease_name = ? ORDER BY DATE) lod,
+DISEASE d, USER u
 WHERE lod.date >= d.date AND lod.date <= d.date_healthy
 AND u.username = d.username 
 AND d.disease_name = ?
@@ -26,7 +26,7 @@ AND ? = u.latitude AND ? = u.longitude
 GROUP BY lod.date`
 const get_user_cords =
     `SELECT latitude, longitude 
-FROM USERS 
+FROM USER 
 WHERE username = ?`;
 
 class TrendDB {

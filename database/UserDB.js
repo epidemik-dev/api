@@ -4,31 +4,31 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 
-const add_user_sql = `INSERT INTO USERS (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
+const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
                                   VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?     )`
-const delete_user_sym_sql = `DELETE DS FROM DISSYM DS, DISEASE_POINTS DP WHERE DS.diseaseID = DP.id AND DP.username = ?`
-const delete_user_diseases_sql = `DELETE DP FROM DISEASE_POINTS DP WHERE DP.username = ?`
+const delete_user_sym_sql = `DELETE DS FROM DISEASE_SYMPTOM DS, DISEASE DP WHERE DS.diseaseID = DP.id AND DP.username = ?`
+const delete_user_diseases_sql = `DELETE DP FROM DISEASE DP WHERE DP.username = ?`
 const delete_bus_user_sql = `DELETE FROM BUSUSER WHERE uName = ? OR bName=  ?`;
-const delete_user_sql = `DELETE FROM USERS where username = ?`
+const delete_user_sql = `DELETE FROM USER where username = ?`
 
-const change_password_sql = `UPDATE USERS SET password = ?, salt = ? WHERE username = ?`
-const change_address_sql = `UPDATE USERS SET latitude = ?, longitude = ? WHERE username = ?`;
+const change_password_sql = `UPDATE USER SET password = ?, salt = ? WHERE username = ?`
+const change_address_sql = `UPDATE USER SET latitude = ?, longitude = ? WHERE username = ?`;
 
-const get_user_salt_sql = `SELECT * FROM USERS WHERE username = ?`;
-const user_exists_sql = `SELECT * FROM USERS WHERE username = ? AND password = ?`;
-const get_indiv_user_sql = `SELECT * FROM USERS LEFT JOIN 
-(DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
-ON USERS.username = DISEASE_POINTS.username
-WHERE USERS.username = ? ORDER BY id`;
+const get_user_salt_sql = `SELECT * FROM USER WHERE username = ?`;
+const user_exists_sql = `SELECT * FROM USER WHERE username = ? AND password = ?`;
+const get_indiv_user_sql = `SELECT * FROM USER LEFT JOIN 
+(DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id)
+ON USER.username = DISEASE.username
+WHERE USER.username = ? ORDER BY id`;
 const get_all_users_sql =
-    `SELECT USERS.username, latitude, longitude, dob, gender, date, disease_name, date_healthy, diseaseID, symID
-FROM USERS LEFT JOIN 
-(DISEASE_POINTS LEFT JOIN DISSYM ON diseaseID = id)
-ON USERS.username = DISEASE_POINTS.username
-WHERE NOT(USERS.username = 'admin')
-ORDER BY USERS.username, id`
+    `SELECT USER.username, latitude, longitude, dob, gender, date, disease_name, date_healthy, diseaseID, symID
+FROM USER LEFT JOIN 
+(DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id)
+ON USER.username = DISEASE.username
+WHERE NOT(USER.username = 'admin')
+ORDER BY USER.username, id`
 const get_user_current_sickness = 
-`SELECT * FROM DISEASE_POINTS
+`SELECT * FROM DISEASE
 WHERE date_healthy IS NULL
 AND username = ?`
 
