@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 
 
 const get_app = require('../main.js').get_app;
-const join = get_app("EPIDEMIK_TEST");
+const join = get_app("EPIDEMIK_TEST", false);
 const app = join[0];
 const reset = join[1];
 
@@ -248,7 +248,6 @@ describe("Login", function () {
             .post('/login')
             .query({
                 version: "1",
-                auth_token: to_delete_auth_token,
                 password: "godpassword",
                 username: "cole"
             })

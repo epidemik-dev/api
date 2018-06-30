@@ -3,6 +3,7 @@ const mysql = require('promise-mysql');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
+var Password = require("node-php-password");
 
 const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
                                   VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?     )`

@@ -1,4 +1,5 @@
 function add_user(req, res) {
+    console.log(req);
     var deviceID = req.body.deviceID;
     var username = req.body.username;
     var unencrypt_password = req.body.password;

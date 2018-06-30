@@ -1,4 +1,4 @@
-function get_app(db_name) {
+function get_app(db_name, should_start) {
 
     /******************************LOAD REQUIRED FILES****************************/
     const express = require('express');
@@ -54,8 +54,9 @@ function get_app(db_name) {
 
     app.use('/', main_router);
 
-    app.listen(3000, () => console.log('Epidemik listening on port 3000' + " with Database " + db_name));
-
+    if(should_start) {
+        app.listen(3000, () => console.log('Epidemik listening on port 3000' + " with Database " + db_name));
+    }
     /************************STUFF FOR TESTING PURPOSES**********************************/
 
     // Void -> Promise(Void)
