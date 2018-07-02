@@ -1,5 +1,4 @@
 function add_user(req, res) {
-    console.log(req);
     var deviceID = req.body.deviceID;
     var username = req.body.username;
     var unencrypt_password = req.body.password;
@@ -18,6 +17,7 @@ function add_user(req, res) {
             token: token
         })
     }).catch(error => {
+        throw error;
         req.http_responses.report_fail_with_message(req, res, "Username already used");
     })
 }

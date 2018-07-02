@@ -43,6 +43,7 @@ function verifyVersion(req, res, next) {
     if(req.query.version === "0.01") {
         req.http_responses.report_bad_version(req, res);
     } else {
+        console.log(req.body);
         next();
     }
 }
