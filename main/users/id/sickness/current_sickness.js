@@ -6,7 +6,6 @@ function is_user_sick(req, res) {
             req.http_responses.report_sucess_with_info(req, res, false);
         }
     }).catch(error => {
-        throw error;
         req.http_responses.report_not_authorized(req, res);
     })
 }

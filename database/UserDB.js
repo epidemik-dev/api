@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 var Password = require("node-php-password");
+var child = require("child_process");
+var exec = child.exec;
+
 
 const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
                                   VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?     )`
@@ -28,8 +31,8 @@ FROM USER LEFT JOIN
 ON USER.username = DISEASE.username
 WHERE NOT(USER.username = 'admin')
 ORDER BY USER.username, id`
-const get_user_current_sickness = 
-`SELECT * FROM DISEASE
+const get_user_current_sickness =
+    `SELECT * FROM DISEASE
 WHERE date_healthy IS NULL
 AND username = ?`
 
@@ -44,37 +47,58 @@ class UserDB {
         });
     }
 
-    // String String -> Promise(String)
+    // String String (String -> Void) -> Void
     // Checks this users login and if sucessful gives a auth token
-    login_user(username, password) {
+    login_user(username, password, callback) {
         var get_salt_query = mysql.format(get_user_salt_sql, [username]);
         var connection;
         var password;
-        return this.pool.getConnection().then(con => {
+        this.pool.getConnection().then(con => {
             connection = con;
             return connection.query(get_salt_query);;
         }).then(result => {
-            if(result.length == 0) {
+            if (result == undefined || result.length == 0) {
                 connection.release();
-                throw new Error("User does not exist");
+                callback(false);
+                return;
             }
-            password = bcrypt.hashSync(password, result[0].salt);
-            var user_exists_query = mysql.format(user_exists_sql, [username, password]);
-            return connection.query(user_exists_query)
-        }).then(result => {
-            if(result.length > 0) {
-                var token = jwt.sign({
-                    data: {
-                        username: username,
-                        password_hash: password
+            var password1 = bcrypt.hashSync(password, result[0].salt);
+            var directory = __dirname + "/login_helper.php";
+            directory = directory.split(' ').join('\\ ');
+            exec("php " + directory, (error, stdout, stderr) => {
+                var password2 = stdout;
+                var user_exists_query = mysql.format(user_exists_sql, [username, password1]);
+                connection.query(user_exists_query).then(result => {
+                    if (result.length > 0) {
+                        var token = jwt.sign({
+                            data: {
+                                username: username,
+                                password_hash: password1
+                            }
+                        }, process.env.JWT_SECRET, {
+                            expiresIn: '10d'
+                        });
+                        callback(token);
+                    } else {
+                        var user_exists_query = mysql.format(user_exists_sql, [username, password2]);
+                        connection.query(user_exists_query).then(result => {
+                            if (result.length > 0) {
+                                var token = jwt.sign({
+                                    data: {
+                                        username: username,
+                                        password_hash: password1
+                                    }
+                                }, process.env.JWT_SECRET, {
+                                    expiresIn: '10d'
+                                });
+                                callback(token);
+                            } else {
+                                callback(false);
+                            }
+                        });
                     }
-                }, process.env.JWT_SECRET, {
-                    expiresIn: '10d'
                 });
-                return token;
-            } else {
-                throw new Error("Incorrect password");
-            }
+            });
         });
     }
 
@@ -150,8 +174,8 @@ class UserDB {
     // String Number Number -> Promise(Void)
     // Changes this users address to the given one
     change_address(userID, latitude, longitude) {
-        latitude =  Math.ceil(latitude * 100)/100;
-        longitude = Math.ceil(longitude * 100)/100;
+        latitude = Math.ceil(latitude * 100) / 100;
+        longitude = Math.ceil(longitude * 100) / 100;
         var change_address_query = mysql.format(change_address_sql, [latitude, longitude, userID]);
         return this.pool.getConnection().then(connection => {
             var res = connection.query(change_address_query);
@@ -257,7 +281,7 @@ class UserDB {
             return toReturn;
         });
     }
-    
+
     // String -> Promise(Boolean)
     // Returns whether or not this user is sick
     // True if sick, false if healty
@@ -268,7 +292,7 @@ class UserDB {
             connection.release();
             return res;
         }).then(result => {
-            if(result.length === 0) {
+            if (result.length === 0) {
                 return false;
             } else {
                 return true;

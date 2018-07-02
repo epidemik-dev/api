@@ -4,7 +4,6 @@ function get_all_trends(req, res) {
             req.http_responses.report_sucess_with_info(req, res, result);
         });
     } catch (error) {
-        throw error;
         req.http_responses.report_not_found(req, res);
     }
 }

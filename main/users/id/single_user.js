@@ -2,7 +2,6 @@ function delete_user(req, res) {
     req.userDB.delete_user(req.params.userID).then(() => {
         req.http_responses.report_sucess_no_info(req, res);
     }).catch(error => {
-        throw error;
         req.http_responses.report_not_found(req, res);
     });
 }
@@ -29,7 +28,6 @@ function change_address(req, res) {
     req.userDB.change_address(req.params.userID, req.query.latitude, req.query.longitude).then(result => {
         req.http_responses.report_sucess_no_info(req, res);
     }).catch(error => {
-        throw error;
         req.http_responses.report_not_found(req, res);
     });
 }
