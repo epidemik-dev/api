@@ -43,8 +43,8 @@ describe("Adds a user to the database", function () {
                 gender: "Male"
             })
             .end(function (err, res) {
-                expect(res.body.token).to.be.a('string');
-                ryan_auth_token = res.body.token;
+                expect(res.body).to.be.a('string');
+                ryan_auth_token = res.body;
                 done();
             });
     });
@@ -65,8 +65,8 @@ describe("Adds a user to the database", function () {
                 gender: "Female"
             })
             .end(function (err, res) {
-                expect(res.body.token).to.be.a('string');
-                brynn_auth_token = res.body.token;
+                expect(res.body).to.be.a('string');
+                brynn_auth_token = res.body;
                 done();
             });
     });
@@ -86,8 +86,8 @@ describe("Adds a user to the database", function () {
                 gender: "Male"
             })
             .end(function (err, res) {
-                expect(res.body.token).to.be.a('string');
-                cole_auth_token = res.body.token
+                expect(res.body).to.be.a('string');
+                cole_auth_token = res.body
                 done();
             });
     });
@@ -108,8 +108,8 @@ describe("Adds a user to the database", function () {
                 gender: "Male"
             })
             .end(function (err, res) {
-                expect(res.body.token).to.be.a('string');
-                to_delete_auth_token = res.body.token;
+                expect(res.body).to.be.a('string');
+                to_delete_auth_token = res.body;
                 done();
             });
     });
@@ -254,7 +254,7 @@ describe("Change a users password", function () {
             })
             .end(function (err, res) {
                 expect(res.body).to.be.not.equal(ryan_auth_token);
-                ryan_auth_token = res.body.token;
+                ryan_auth_token = res.body;
                 done();
             });
     });
@@ -491,10 +491,10 @@ describe("Gets all diseases", function () {
                 version: "1",
                 auth_token: admin_auth_token,
                 region: {
-                    latMin: -50,
-                    longMin: -50,
-                    latMax: 50,
-                    longMax: 50
+                    lat_min: -50,
+                    long_min: -50,
+                    lat_max: 50,
+                    long_max: 50
                 }
             })
             .end(function (err, res) {
@@ -525,10 +525,10 @@ describe("Gets all diseases by name", function () {
                 version: "1",
                 auth_token: admin_auth_token,
                 region: {
-                    latMin: -50,
-                    longMin: -50,
-                    latMax: 50,
-                    longMax: 50
+                    lat_min: -50,
+                    long_min: -50,
+                    lat_max: 50,
+                    long_max: 50
                 }
             })
             .end(function (err, res) {
@@ -557,10 +557,10 @@ describe("Gets all information for a diseases symtoms", function () {
                 version: "1",
                 auth_token: admin_auth_token,
                 region: {
-                    latMin: -50,
-                    longMin: -50,
-                    latMax: 50,
-                    longMax: 50
+                    lat_min: -50,
+                    long_min: -50,
+                    lat_max: 50,
+                    long_max: 50
                 }
             })
             .end(function (err, res) {

@@ -36,7 +36,6 @@ function verifyJWT(req, res, next) {
         req.verified = verified;
         next();
     }).catch(error => {
-        throw error;
         req.http_responses.report_bad_token(req, res);
     });
 }

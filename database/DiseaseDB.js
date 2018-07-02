@@ -226,6 +226,8 @@ class DiseaseDB {
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
                         date_healthy: result[i].date_healthy,
+                        latitude: result[i].latitude,
+                        longitude: result[i].longitude,
                         symptoms: []
                     };
                 }
