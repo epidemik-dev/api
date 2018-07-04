@@ -20,6 +20,8 @@ CREATE TABLE USER (
     PRIMARY KEY (username)
 );
 
+INSERT INTO USER VALUES("12121", 40, 50, "ryan-bradford", "PAgudnrVNi6lU", "$2b$10$60zRsjUz1tXU8fsVS8MaoO", "2017-06-12", "1999-05-05", "Male");
+
 -- Stores the join between users and business owners (also users)
 -- This table is used to store information for Epidemik Management
 -- Every business can employ every employee only once at a given time

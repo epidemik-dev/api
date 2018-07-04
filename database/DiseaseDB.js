@@ -14,7 +14,7 @@ const am_healthy_sql = "UPDATE DISEASE SET date_healthy = ? WHERE date_healthy I
 const get_user_symptoms = "SELECT symID FROM DISEASE_SYMPTOM, DISEASE WHERE id = diseaseID AND date_healthy IS NULL AND username = ?";
 const get_disease_symptoms = "SELECT symID FROM DISEASE_SYMPTOM WHERE diseaseID = ?";
 const get_disease_sql = "SELECT * FROM DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
-const get_user_disease_sql = "SELECT * FROM DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id WHERE username = ? ORDER BY id";
+const get_user_disease_sql = "SELECT * FROM USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) ON USER.username = DISEASE.username WHERE USER.username = ? ORDER BY id";
 const get_all_diseases_sql = 
 `SELECT * FROM 
 USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) 
@@ -189,10 +189,13 @@ class DiseaseDB {
                         toReturn.push(cur_disease);
                     }
                     last_id = result[i].id;
+                    console.log(result[i].latitude);
                     cur_disease = {
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
                         date_healthy: result[i].date_healthy,
+                        latitude: result[i].latitude,
+                        longitude: result[i].longitude,
                         symptoms: []
                     };
                 }

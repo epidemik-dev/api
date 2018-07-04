@@ -65,7 +65,7 @@ class UserDB {
             var password1 = bcrypt.hashSync(password, result[0].salt);
             var directory = __dirname + "/login_helper.php";
             directory = directory.split(' ').join('\\ ');
-            exec("php " + directory, (error, stdout, stderr) => {
+            exec("php " + directory + " " + password, (error, stdout, stderr) => {
                 var password2 = stdout;
                 var user_exists_query = mysql.format(user_exists_sql, [username, password1]);
                 connection.query(user_exists_query).then(result => {
@@ -86,7 +86,7 @@ class UserDB {
                                 var token = jwt.sign({
                                     data: {
                                         username: username,
-                                        password_hash: password1
+                                        password_hash: password2
                                     }
                                 }, process.env.JWT_SECRET, {
                                     expiresIn: '10d'

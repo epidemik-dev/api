@@ -1,5 +1,5 @@
 <?php
 
-echo(crypt($argv[0], "PASSWORD_DEFAULT"));
+echo(crypt($argv[1], "PASSWORD_DEFAULT"));
 
 ?>
