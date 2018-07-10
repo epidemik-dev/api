@@ -369,6 +369,8 @@ describe("Get all user disease", function () {
             })
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal([{
+                    latitude: "2",
+                    longitude: "2",
                     disease_name: 'Flu',
                     date_sick: '2018-05-23T04:00:00.000Z',
                     date_healthy: '2018-05-25T04:00:00.000Z',
@@ -500,6 +502,8 @@ describe("Gets all diseases", function () {
             .end(function (err, res) {
                 expect(res.body).to.be.deep.equal(
                     [{
+                        latitude: "0.01",
+                        longitude: "0.01",
                         disease_name: 'Common Cold',
                         date_sick: '2018-05-20T04:00:00.000Z',
                         date_healthy: null,

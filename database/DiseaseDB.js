@@ -15,8 +15,8 @@ const get_user_symptoms = "SELECT symID FROM DISEASE_SYMPTOM, DISEASE WHERE id =
 const get_disease_symptoms = "SELECT symID FROM DISEASE_SYMPTOM WHERE diseaseID = ?";
 const get_disease_sql = "SELECT * FROM DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id WHERE diseaseID = ? AND username = ?";
 const get_user_disease_sql = "SELECT * FROM USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) ON USER.username = DISEASE.username WHERE USER.username = ? ORDER BY id";
-const get_all_diseases_sql = 
-`SELECT * FROM 
+const get_all_diseases_sql =
+    `SELECT * FROM 
 USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) 
 ON USER.username = DISEASE.username
 WHERE latitude >= ? 
@@ -24,8 +24,8 @@ AND latitude <=   ?
 AND longitude >=  ?
 AND longitude <=  ?
 AND date_healthy IS NULL`
-const get_specific_disease_sql = 
-`SELECT * FROM 
+const get_specific_disease_sql =
+    `SELECT * FROM 
 USER JOIN (DISEASE LEFT JOIN DISEASE_SYMPTOM ON diseaseID = id) 
 ON USER.username = DISEASE.username
 WHERE latitude >= ? 
@@ -33,11 +33,29 @@ AND latitude <=   ?
 AND longitude >=  ?
 AND longitude <=  ?
 AND disease_name = ?`
-const get_disease_name_symptoms = 
-`SELECT diseaseID, symID
+const get_disease_name_symptoms =
+    `SELECT diseaseID, symID
 FROM DISEASE_SYMPTOM, DISEASE
 WHERE diseaseID = id
 AND disease_name = ?`;
+const get_user_score_sql = 
+`SELECT score.disease_name, score.c/symptoms.a as avg
+FROM
+(SELECT disease_name, COUNT(*) c
+FROM DISEASE D2, DISEASE_SYMPTOM DS2,
+(SELECT symID
+FROM DISEASE D1, DISEASE_SYMPTOM DS1
+WHERE ? = D1.username AND D1.id = DS1.diseaseID AND D1.date_healthy IS NULL) as S
+WHERE D2.id = DS2.diseaseID AND S.symID = DS2.symID
+GROUP BY disease_name) as score, 
+(SELECT disease_name, AVG(c) a FROM 
+(SELECT disease_name, COUNT(*) as c
+FROM DISEASE, DISEASE_SYMPTOM
+WHERE id = diseaseID
+GROUP BY diseaseID) tab
+GROUP BY disease_name) as symptoms
+WHERE symptoms.disease_name = score.disease_name
+AND symptoms.a != 0`
 
 class DiseaseDB {
 
@@ -57,15 +75,18 @@ class DiseaseDB {
         var add_disease_query = mysql.format(add_disease_sql, [disease_name, date_sick, date_healthy, username]);
         return this.pool.getConnection().then(con => {
             connection = con;
-            var res = connection.query(add_disease_query)
+            var res = connection.query(add_disease_query);
             return res;
         }).then(result => {
             var disID = result.insertId;
+            var toPromise = [];
             for (var symptom in symptoms) {
                 var add_sym_query = mysql.format(add_symptom_sql, [disID, symptoms[symptom]])
-                connection.query(add_sym_query);
+                toPromise.push(connection.query(add_sym_query));
             }
-            connection.release();
+            return Promise.all(toPromise);
+        }).then(res => {
+            return diagnose_user(username, connection);
         });
     }
 
@@ -155,13 +176,15 @@ class DiseaseDB {
             connection.release();
             return res;
         }).then(result => {
-            if(result.length === 0) {
+            if (result.length === 0) {
                 throw new Error("Disease not found");
             }
             var toReturn = {};
             var syms = [];
-            for(var i in result) {
-                syms.push({symID: result[i].symID});
+            for (var i in result) {
+                syms.push({
+                    symID: result[i].symID
+                });
             }
             toReturn.disease_name = result[0].disease_name;
             toReturn.date_sick = result[0].date;
@@ -183,13 +206,12 @@ class DiseaseDB {
             var toReturn = [];
             var cur_disease = undefined;
             var last_id = undefined;
-            for(var i in result) {
-                if(result[i].id !== last_id) {
-                    if(last_id !== undefined) {
+            for (var i in result) {
+                if (result[i].id !== last_id) {
+                    if (last_id !== undefined) {
                         toReturn.push(cur_disease);
                     }
                     last_id = result[i].id;
-                    console.log(result[i].latitude);
                     cur_disease = {
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
@@ -199,9 +221,11 @@ class DiseaseDB {
                         symptoms: []
                     };
                 }
-                cur_disease.symptoms.push({symID: result[i].symID});
+                cur_disease.symptoms.push({
+                    symID: result[i].symID
+                });
             }
-            if(cur_disease !== undefined) {
+            if (cur_disease !== undefined) {
                 toReturn.push(cur_disease);
             }
             return toReturn;
@@ -219,9 +243,9 @@ class DiseaseDB {
             var toReturn = [];
             var cur_disease = undefined;
             var last_id = undefined;
-            for(var i in result) {
-                if(result[i].id !== last_id) {
-                    if(last_id !== undefined) {
+            for (var i in result) {
+                if (result[i].id !== last_id) {
+                    if (last_id !== undefined) {
                         toReturn.push(cur_disease);
                     }
                     last_id = result[i].id;
@@ -234,9 +258,11 @@ class DiseaseDB {
                         symptoms: []
                     };
                 }
-                cur_disease.symptoms.push({symID: result[i].symID});
+                cur_disease.symptoms.push({
+                    symID: result[i].symID
+                });
             }
-            if(cur_disease !== undefined) {
+            if (cur_disease !== undefined) {
                 toReturn.push(cur_disease);
             }
             return toReturn;
@@ -255,9 +281,9 @@ class DiseaseDB {
             var toReturn = [];
             var cur_disease = undefined;
             var last_id = undefined;
-            for(var i in result) {
-                if(result[i].id !== last_id) {
-                    if(last_id !== undefined) {
+            for (var i in result) {
+                if (result[i].id !== last_id) {
+                    if (last_id !== undefined) {
                         toReturn.push(cur_disease);
                     }
                     last_id = result[i].id;
@@ -268,15 +294,17 @@ class DiseaseDB {
                         symptoms: []
                     };
                 }
-                cur_disease.symptoms.push({symID: result[i].symID});
+                cur_disease.symptoms.push({
+                    symID: result[i].symID
+                });
             }
-            if(cur_disease !== undefined) {
+            if (cur_disease !== undefined) {
                 toReturn.push(cur_disease);
             }
             return toReturn;
         });
     }
-    
+
     // String -> Promise([List-of [List-of Symptom]])
     get_disease_name_symptoms(disease_name) {
         var get_all_symptoms_query = mysql.format(get_disease_name_symptoms, [disease_name]);
@@ -288,17 +316,19 @@ class DiseaseDB {
             var all_symptoms = [];
             var cur_symptoms = undefined;
             var last_disease_id = undefined;
-            for(var i in result) {
-                if(result[i].diseaseID !== last_disease_id) {
+            for (var i in result) {
+                if (result[i].diseaseID !== last_disease_id) {
                     last_disease_id = result[i].diseaseID;
-                    if(last_disease_id !== undefined && cur_symptoms !== undefined) {
+                    if (last_disease_id !== undefined && cur_symptoms !== undefined) {
                         all_symptoms.push(cur_symptoms);
                     }
                     cur_symptoms = [];
                 }
-                cur_symptoms.push({symID: result[i].symID});
+                cur_symptoms.push({
+                    symID: result[i].symID
+                });
             }
-            if(cur_symptoms !== undefined) {
+            if (cur_symptoms !== undefined) {
                 all_symptoms.push(cur_symptoms);
             }
             return all_symptoms;
@@ -306,6 +336,27 @@ class DiseaseDB {
     }
 
 
+}
+
+// String Connection -> Promise(String)
+// Returns the name of the disease we think this user has
+// EFFECT: will release the connection at the end
+function diagnose_user(username, connection) {
+    var user_score_query = mysql.format(get_user_score_sql, [username]);
+    connection.query(user_score_query).then(score => {
+        var highest_score = 0;
+        var disease_name = "Common-Cold";
+        for(var i in score) {
+            if(score.avg > highest_score) {
+                disease_name = score.disease_name;
+                highest_score = score.avg;
+            }
+        }
+        console.log(score);
+        console.log(disease_name);
+        connection.release();
+        return disease_name;
+    });
 }
 
 module.exports = DiseaseDB

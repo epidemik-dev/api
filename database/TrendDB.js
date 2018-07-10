@@ -151,6 +151,9 @@ function get_user_count_on(user_counts, date) {
             return user_counts[i].number
         }
     }
+    if(user_counts.length === 1) {
+        return user_counts[0].number
+    }
     return 1;
 }
 
