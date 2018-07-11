@@ -70,6 +70,7 @@ class UserDB {
                 var user_exists_query = mysql.format(user_exists_sql, [username, password1]);
                 connection.query(user_exists_query).then(result => {
                     if (result.length > 0) {
+                        connection.release();
                         var token = jwt.sign({
                             data: {
                                 username: username,
@@ -82,6 +83,7 @@ class UserDB {
                     } else {
                         var user_exists_query = mysql.format(user_exists_sql, [username, password2]);
                         connection.query(user_exists_query).then(result => {
+                            connection.release();
                             if (result.length > 0) {
                                 var token = jwt.sign({
                                     data: {

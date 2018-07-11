@@ -343,7 +343,7 @@ class DiseaseDB {
 // EFFECT: will release the connection at the end
 function diagnose_user(username, connection) {
     var user_score_query = mysql.format(get_user_score_sql, [username]);
-    connection.query(user_score_query).then(score => {
+    return connection.query(user_score_query).then(score => {
         var highest_score = 0;
         var disease_name = "Common-Cold";
         for(var i in score) {
@@ -352,8 +352,6 @@ function diagnose_user(username, connection) {
                 highest_score = score.avg;
             }
         }
-        console.log(score);
-        console.log(disease_name);
         connection.release();
         return disease_name;
     });
