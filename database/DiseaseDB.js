@@ -365,7 +365,7 @@ class DiseaseDB {
             for(var i = 0; i < num_to_add; i++) {
                 promises.push(add_disease_with_connection("Hand-Foot-and-Mouth", "1800-01-01", "1800-01-01", "admin", [15, 16, 20, 5, 27], false, connection));
             }
-            return promises;
+            return Promise.all(promises);
         }).then(result => {
             connection.release();
             return;

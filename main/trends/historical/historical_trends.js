@@ -3,7 +3,6 @@ function get_historical_trends(req, res) {
     var longitude = req.query.longitude;
     var disease_name = req.query.disease_name;
     req.trendDB.get_historical_trends(latitude, longitude, disease_name).then(result => {
-        console.log(result);
         req.http_responses.report_sucess_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);

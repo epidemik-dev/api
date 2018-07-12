@@ -13,7 +13,6 @@ function add_disease(req, res) {
         }
         req.http_responses.report_sucess_with_info(req, res, result);
     }).catch(error => {
-        throw error;
         req.http_responses.report_not_found(req, res);
     });
 }

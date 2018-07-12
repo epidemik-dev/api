@@ -33,9 +33,7 @@ describe("Diagnosis", function () {
                 done();
             });
         });
-    });
 
-    describe("Add diagnosis data", function () {
         it("should not error", function (done) {
             diagnose().then(() => {
                 expect(1).to.be.equal(1);

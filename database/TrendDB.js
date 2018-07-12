@@ -5,7 +5,8 @@ const get_all_disease_names_sql =
     `SELECT DISTINCT disease_name 
 FROM DISEASE d, USER u 
 WHERE u.username = d.username 
-AND ? = u.latitude AND ? = u.longitude`
+AND ? = u.latitude AND ? = u.longitude
+AND disease_name IS NOT NULL`
 const get_number_of_users_on_dates_sql =
     `SELECT COUNT(*) as number,lod.date_reg as time
 FROM 
@@ -74,7 +75,6 @@ class TrendDB {
                 connection.release();
             return res;
         }).then(([users, infections]) => {
-            console.log(users, infections);
             return get_percent_infected(users, infections);
         })
     }

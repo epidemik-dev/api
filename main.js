@@ -67,7 +67,11 @@ function get_app(db_name, should_start) {
     // Void -> Promise(Void)
     // Adds all the disease to the database used for diagnosis
     function add_diagnosis_diseases() {
-        return diseaseDB.add_diagnosis_diseases();
+        return userDB.delete_user('admin').then(result => {
+            return userDB.add_user("", "admin", process.env.ADMIN_PASSWORD, 1, 1, "1800/01/01", "Female")
+        }).then(admin_token => {
+            return diseaseDB.add_diagnosis_diseases();
+        });
     }
 
     return [app, reset, add_diagnosis_diseases];

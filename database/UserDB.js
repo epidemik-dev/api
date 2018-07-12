@@ -10,9 +10,8 @@ var exec = child.exec;
 
 const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
                                   VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?     )`
-const delete_user_sym_sql = `DELETE DS FROM DISEASE_SYMPTOM DS, DISEASE DP WHERE DS.diseaseID = DP.id AND DP.username = ?`
-const delete_user_diseases_sql = `DELETE DP FROM DISEASE DP WHERE DP.username = ?`
-const delete_bus_user_sql = `DELETE FROM BUSUSER WHERE uName = ? OR bName=  ?`;
+const delete_user_sym_sql = `DELETE DISEASE_SYMPTOM FROM DISEASE_SYMPTOM, DISEASE WHERE diseaseID = id AND username = ?`
+const delete_user_diseases_sql = `DELETE FROM DISEASE WHERE username = ?`
 const delete_user_sql = `DELETE FROM USER where username = ?`
 
 const change_password_sql = `UPDATE USER SET password = ?, salt = ? WHERE username = ?`
@@ -136,17 +135,18 @@ class UserDB {
     delete_user(username) {
         var delete_symptom_query = mysql.format(delete_user_sym_sql, [username]);
         var delete_disease_query = mysql.format(delete_user_diseases_sql, [username])
-        var delete_bus_query = mysql.format(delete_bus_user_sql, [username, username])
         var delete_user_query = mysql.format(delete_user_sql, [username])
-        return this.pool.getConnection().then(connection => {
-            var res = Promise.all([connection.query(delete_symptom_query),
-                connection.query(delete_disease_query),
-                connection.query(delete_bus_query),
-                connection.query(delete_user_query)
-            ])
+        var connection;
+        return this.pool.getConnection().then(con => {
+            connection = con;
+            return connection.query(delete_symptom_query);
+        }).then(result => {
+            return connection.query(delete_disease_query);
+        }).then(result => {
+            var res = connection.query(delete_user_query);
             connection.release();
             return res;
-        })
+        });
     }
 
     // String String -> Promise(Void)
