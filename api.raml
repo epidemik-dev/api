@@ -4,6 +4,14 @@ version: v0.1
 mediaType: application/json
 baseUri: https://epidemik.us/api.php
 types:
+  Diagnosis:
+    properties: 
+      disease_name: string
+      probability: number
+    example:
+      disease_name: "Common Cold"
+      probability: 0.6
+
   NewUser:
     properties: 
       username: string
@@ -369,9 +377,8 @@ types:
           200:
             body:
               application/json:
-                type: string
-              description: Returns the name of the disease that the backend thinks you have.
-            example: "Common Cold"
+                type: Diagnosis[]
+              description: Returns the diseases you may have ordered by probability.
 
       get:
         description: Return information about this users sickness. 
