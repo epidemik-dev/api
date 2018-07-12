@@ -1,13 +1,19 @@
 function add_disease(req, res) {
-    var disease_name = req.body.disease_name;
     var date_sick = req.body.date_sick;
     var date_healthy = req.body.date_healthy;
     var username = req.params.userID;
     var symptoms = req.body.symptoms;
+    var disease_name = null;
+    if(req.body.disease_name != undefined) {
+        disease_name = req.body.disease_name;
+    }
     req.diseaseDB.add_disease(disease_name, date_sick, date_healthy, username, symptoms).then(result => {
-        result = result.replace("-", " ");
+        for(var i in result) {
+            result[i].disease_name = result[i].disease_name.replace("-", " ");
+        }
         req.http_responses.report_sucess_with_info(req, res, result);
     }).catch(error => {
+        throw error;
         req.http_responses.report_not_found(req, res);
     });
 }

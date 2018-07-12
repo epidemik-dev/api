@@ -63,7 +63,14 @@ function get_app(db_name, should_start) {
     function reset() {
         return resetDB.reset_db();
     }
-    return [app, reset];
+
+    // Void -> Promise(Void)
+    // Adds all the disease to the database used for diagnosis
+    function add_diagnosis_diseases() {
+        return diseaseDB.add_diagnosis_diseases();
+    }
+
+    return [app, reset, add_diagnosis_diseases];
 }
 
 

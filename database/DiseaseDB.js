@@ -39,7 +39,7 @@ FROM DISEASE_SYMPTOM, DISEASE
 WHERE diseaseID = id
 AND disease_name = ?`;
 const get_user_score_sql = 
-`SELECT score.disease_name, score.c/symptoms.a as avg
+`SELECT score.disease_name, score.c/symptoms.a as probability
 FROM
 (SELECT disease_name, COUNT(*) c
 FROM DISEASE D2, DISEASE_SYMPTOM DS2,
@@ -48,14 +48,18 @@ FROM DISEASE D1, DISEASE_SYMPTOM DS1
 WHERE ? = D1.username AND D1.id = DS1.diseaseID AND D1.date_healthy IS NULL) as S
 WHERE D2.id = DS2.diseaseID AND S.symID = DS2.symID
 GROUP BY disease_name) as score, 
-(SELECT disease_name, AVG(c) a FROM 
-(SELECT disease_name, COUNT(*) as c
-FROM DISEASE, DISEASE_SYMPTOM
-WHERE id = diseaseID
-GROUP BY diseaseID) tab
+(SELECT disease_name, COUNT(*) a 
+FROM DISEASE, DISEASE_SYMPTOM 
+WHERE diseaseID = id
 GROUP BY disease_name) as symptoms
 WHERE symptoms.disease_name = score.disease_name
-AND symptoms.a != 0`
+AND symptoms.a != 0
+ORDER BY score.c/symptoms.a DESC`
+
+const update_disease_sql = 'UPDATE DISEASE SET disease_name = ? WHERE username = ? AND date_healthy IS NULL';
+
+const remove_diag_disease_sql = `DELETE DISEASE_SYMPTOM FROM DISEASE_SYMPTOM JOIN DISEASE ON diseaseID = id WHERE username = 'admin';
+                                 DELETE FROM DISEASE where username = 'admin';`;
 
 class DiseaseDB {
 
@@ -64,29 +68,17 @@ class DiseaseDB {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
-            database: db_name
+            database: db_name,
+            multipleStatements: true
         });
     }
 
-    // String Date [Null or Date] String [List-of Number] -> Promise(String)
+    // String Date [Null or Date] String [List-of Number] -> Promise([List-of Diagnosis])
+    // A Diagnosis is a Object(probability: Number, disease_name: String)
     // Adds this disease to the database and returns the disease we think you have
     add_disease(disease_name, date_sick, date_healthy, username, symptoms) {
-        var connection;
-        var add_disease_query = mysql.format(add_disease_sql, [disease_name, date_sick, date_healthy, username]);
         return this.pool.getConnection().then(con => {
-            connection = con;
-            var res = connection.query(add_disease_query);
-            return res;
-        }).then(result => {
-            var disID = result.insertId;
-            var toPromise = [];
-            for (var symptom in symptoms) {
-                var add_sym_query = mysql.format(add_symptom_sql, [disID, symptoms[symptom]])
-                toPromise.push(connection.query(add_sym_query));
-            }
-            return Promise.all(toPromise);
-        }).then(res => {
-            return diagnose_user(username, connection);
+            return add_disease_with_connection(disease_name, date_sick, date_healthy, username, symptoms, true, con);
         });
     }
 
@@ -335,6 +327,51 @@ class DiseaseDB {
         });
     }
 
+    // Void -> Promise(Void)
+    // Adds all the diseases to the database that are used for diagnosis
+    add_diagnosis_diseases() {
+        var connection;
+        return this.pool.getConnection().then(con => {
+            connection = con;
+            var res = connection.query(remove_diag_disease_sql);
+            return res;
+        }).then(result => {
+            var num_to_add = 10;
+            var promises = [];
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Common-Cold", "1800-01-01", "1800-01-01", "admin", [1, 2, 3, 4, 5], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Influenza-(Flu)", "1800-01-01", "1800-01-01", "admin", [6, 2, 7, 8, 4], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Gastroenteritis-(Stomach-Flu)", "1800-01-01", "1800-01-01", "admin", [9, 10, 11, 12, 2], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Staph-Infection", "1800-01-01", "1800-01-01", "admin", [13, 14, 15, 2, 16], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Strep-Throat", "1800-01-01", "1800-01-01", "admin", [17, 13, 2, 18, 5], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Lyme-Disease", "1800-01-01", "1800-01-01", "admin", [19, 2, 5, 7, 18], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Tuberculosis", "1800-01-01", "1800-01-01", "admin", [20, 21, 6, 7, 22], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Pink-Eye", "1800-01-01", "1800-01-01", "admin", [23, 3, 24, 25, 26], false, connection));
+            }
+            for(var i = 0; i < num_to_add; i++) {
+                promises.push(add_disease_with_connection("Hand-Foot-and-Mouth", "1800-01-01", "1800-01-01", "admin", [15, 16, 20, 5, 27], false, connection));
+            }
+            return promises;
+        }).then(result => {
+            connection.release();
+            return;
+        })
+    }
+
 
 }
 
@@ -343,17 +380,36 @@ class DiseaseDB {
 // EFFECT: will release the connection at the end
 function diagnose_user(username, connection) {
     var user_score_query = mysql.format(get_user_score_sql, [username]);
-    return connection.query(user_score_query).then(score => {
-        var highest_score = 0;
-        var disease_name = "Common-Cold";
-        for(var i in score) {
-            if(score.avg > highest_score) {
-                disease_name = score.disease_name;
-                highest_score = score.avg;
-            }
+    return connection.query(user_score_query).then(result => {
+        if(result.length > 0) {
+            var update_query = mysql.format(update_disease_sql, [result[0].disease_name, username]);
+            connection.query(update_query);
         }
         connection.release();
-        return disease_name;
+        return result;
+    });
+}
+
+// String DateString DateString String [List-of Number] Boolean Connection -> Promise([List-of Diagnosis])
+// Adds a disease to the database given a connection
+// If should_diagnose is true it will return the diagnosis and release the connection
+// EFFECT: will release the connection if should_diagnose is true
+function add_disease_with_connection(disease_name, date_sick, date_healthy, username, symptoms, should_diagnose, connection) {
+    var add_disease_query = mysql.format(add_disease_sql, [disease_name, date_sick, date_healthy, username]);
+    return connection.query(add_disease_query).then(result => {
+        var disID = result.insertId;
+        var toPromise = [];
+        for (var symptom in symptoms) {
+            var add_sym_query = mysql.format(add_symptom_sql, [disID, symptoms[symptom]])
+            toPromise.push(connection.query(add_sym_query));
+        }
+        return Promise.all(toPromise);
+    }).then(res => {
+        if(should_diagnose) {
+            return diagnose_user(username, connection);
+        } else {
+            return [];
+        }
     });
 }
 
