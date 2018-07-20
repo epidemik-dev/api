@@ -83,7 +83,7 @@ class DiseaseDB {
     }
 
     // Number -> Promise(Void)
-    // Removes this disease entry and all assocated informaiton
+    // Removes this disease entry and all associated information
     delete_disease(diseaseID) {
         var delete_sym_query = mysql.format(delete_disease_sym_sql, [diseaseID]);
         var delete_disease_query = mysql.format(delete_disease_sql, [diseaseID]);

@@ -4,7 +4,7 @@ function login_user(req, res) {
             if(token === false) {
                 req.http_responses.report_not_authorized(req, res);
             } else {
-                req.http_responses.report_sucess_with_info(req, res, token);
+                req.http_responses.report_success_with_info(req, res, token);
             }
         });
     } catch {

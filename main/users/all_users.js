@@ -19,7 +19,7 @@ function add_user(req, res) {
 
 function get_all_users(req, res) {
     req.userDB.get_all_users().then(result => {
-        req.http_responses.report_sucess_with_info(req, res, result);
+        req.http_responses.report_success_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     })

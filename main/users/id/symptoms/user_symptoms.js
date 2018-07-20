@@ -1,6 +1,6 @@
 function add_symptom(req, res) {
     req.diseaseDB.add_symptom(req.params.userID, req.body.symID).then(result => {
-        req.http_responses.report_sucess_with_info(req, res, result);
+        req.http_responses.report_success_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     });
@@ -8,7 +8,7 @@ function add_symptom(req, res) {
 
 function get_symptoms(req, res) {
     req.diseaseDB.get_user_symptoms(req.params.userID).then(result => {
-        req.http_responses.report_sucess_with_info(req, res, result);
+        req.http_responses.report_success_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     })

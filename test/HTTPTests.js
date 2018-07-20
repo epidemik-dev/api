@@ -27,7 +27,7 @@ describe("Resets the database", function () {
 });
 
 describe("Adds a user to the database", function () {
-    it("should give status 201 if the adding was sucessful", function (done) {
+    it("should give status 201 if the adding was successful", function (done) {
         chai.request(app)
             .post('/users')
             .query({
@@ -49,7 +49,7 @@ describe("Adds a user to the database", function () {
             });
     });
 
-    it("should give status 201 if the adding was sucessful", function (done) {
+    it("should give status 201 if the adding was successful", function (done) {
         chai.request(app)
             .post('/users')
             .query({
@@ -70,7 +70,7 @@ describe("Adds a user to the database", function () {
                 done();
             });
     });
-    it("should give status 201 if the adding was sucessful", function (done) {
+    it("should give status 201 if the adding was successful", function (done) {
         chai.request(app)
             .post('/users')
             .query({
@@ -91,7 +91,7 @@ describe("Adds a user to the database", function () {
                 done();
             });
     });
-    it("should give status 201 if the adding was sucessful", function (done) {
+    it("should give status 201 if the adding was successful", function (done) {
 
         chai.request(app)
             .post('/users')
@@ -116,7 +116,7 @@ describe("Adds a user to the database", function () {
 });
 
 describe("Deletes a user from the system", function () {
-    it("should give status 204 if the deletion was sucessful", function (done) {
+    it("should give status 204 if the deletion was successful", function (done) {
         chai.request(app)
             .del('/users/to_delete')
             .query({
@@ -131,7 +131,7 @@ describe("Deletes a user from the system", function () {
 });
 
 describe("Add diseases to the system", function () {
-    it("should give status 204 if adding is sucessful", function (done) {
+    it("should give status 204 if adding is successful", function (done) {
         chai.request(app)
             .post('/users/ryan/diseases')
             .query({
@@ -149,7 +149,7 @@ describe("Add diseases to the system", function () {
             });
     });
 
-    it("should give status 204 if adding is sucessful", function (done) {
+    it("should give status 204 if adding is successful", function (done) {
         chai.request(app)
             .post('/users/cole/diseases')
             .query({
@@ -167,7 +167,7 @@ describe("Add diseases to the system", function () {
             });
     });
 
-    it("should give status 204 if adding is sucessful", function (done) {
+    it("should give status 204 if adding is successful", function (done) {
         chai.request(app)
             .post('/users/brynn/diseases')
             .query({
@@ -187,7 +187,7 @@ describe("Add diseases to the system", function () {
 });
 
 describe("Delete diseases", function () {
-    it("should return status 204 if the deletion is sucessful", function (done) {
+    it("should return status 204 if the deletion is successful", function (done) {
         chai.request(app)
             .delete('/users/brynn/diseases/3')
             .query({
@@ -201,7 +201,7 @@ describe("Delete diseases", function () {
 });
 
 describe("Mark a disease as healthy", function () {
-    it("should give status 204 if the adding is sucessful", function (done) {
+    it("should give status 204 if the adding is successful", function (done) {
         chai.request(app)
             .patch('/users/cole/diseases')
             .query({
@@ -262,7 +262,7 @@ describe("Change a users password", function () {
 
 
 describe("Delete symptom", function () {
-    it("should give status 204 if sucessful", function (done) {
+    it("should give status 204 if successful", function (done) {
         chai.request(app)
             .delete('/users/ryan/diseases/1/symptoms/1')
             .query({
@@ -276,7 +276,7 @@ describe("Delete symptom", function () {
 });
 
 describe("Add symptom", function () {
-    it("should give status 204 if sucessful", function (done) {
+    it("should give status 204 if successful", function (done) {
         chai.request(app)
             .post('/users/ryan/symptoms')
             .query({
@@ -553,7 +553,7 @@ describe("Gets all diseases by name", function () {
     });
 });
 
-describe("Gets all information for a diseases symtoms", function () {
+describe("Gets all information for a diseases symptoms", function () {
     it("should return a list of all symptoms experienced by people with this disease", function (done) {
         chai.request(app)
             .get('/diseases/Common Cold/symptoms')
@@ -662,3 +662,33 @@ describe("Returns the trends for this users region", function () {
             });
     });
 });
+
+describe("Returns info about this disease", function() {
+    it("should give status 200", function(done) {
+        chai.request(app)
+            .get('/diseases/Flu/information')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    })
+})
+
+describe("Returns info about symptoms", function() {
+    it("should give status 200", function(done) {
+        chai.request(app)
+            .get('/diseases/symptoms')
+            .query({
+                version: "1",
+                auth_token: admin_auth_token
+            })
+            .end(function (err, res) {
+                expect(res.status).to.be.equal(200);
+                done();
+            });
+    })
+})
