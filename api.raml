@@ -12,6 +12,15 @@ types:
       disease_name: "Common Cold"
       probability: 0.6
 
+  DiseaseInformation:
+    properties:
+      medicine: string[]
+      doctor: boolean
+
+  SymptomReport:
+    properties:
+      symptom_map: object
+
   NewUser:
     properties: 
       username: string
@@ -669,6 +678,37 @@ types:
           application/json:
             type: Disease[]
 
+  /symptoms:
+    description: Returns the symptoms used for diagnosing users.
+      queryParameters: 
+        version:
+          displayName: Version
+          type: string
+          description: The current version of the app the user is using.
+          example: 1.0
+          required: true
+        auth_token:
+          displayName: Authorization Token
+          type: string
+          description: The authorization token the user was given when they logged in.
+          example: "#12akjcns&^sanus&^"
+          required: true
+      responses:          
+        426:
+          body:
+            application/json:
+              type: string
+            example: "Version out of date"
+        401:
+          body:
+            application/json:
+              type: string
+            example: "Bad Authorization Token"
+        200:
+          body:
+            application/json:
+              type: SymptomReport
+
   /{disease_name}:
     get:
       description: Returns information about every disease matching this disease name in the requested region.
@@ -737,6 +777,38 @@ types:
             body:
               application/json:
                 type: Symptom[][]
+
+    /information:
+      get:
+        description: Returns information about this disease. Like recomended medicies and stuff.
+        queryParameters: 
+          version:
+            displayName: Version
+            type: string
+            description: The current version of the app the user is using.
+            example: 1.0
+            required: true
+          auth_token:
+            displayName: Authorization Token
+            type: string
+            description: The authorization token the user was given when they logged in.
+            example: "#12akjcns&^sanus&^"
+            required: true
+        responses:          
+          426:
+            body:
+              application/json:
+                type: string
+              example: "Version out of date"
+          401:
+            body:
+              application/json:
+                type: string
+              example: "Bad Authorization Token"
+          200:
+            body:
+              application/json:
+                type: DiseaseInformation
 
 /trends:
   get:
@@ -853,7 +925,7 @@ types:
               type: HistoricalTrend[]
 /login:
   post:
-    description: Returns the auth token if sucessful
+    description: Returns the auth token if successful
     queryParameters: 
       version:
         displayName: Version

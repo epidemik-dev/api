@@ -11,7 +11,7 @@ function add_user(req, res) {
         return;
     }
     req.userDB.add_user(deviceID, username, unencrypt_password, latitude, longitude, dob, gender).then(token => {
-        req.http_responses.report_creation_sucessful(req, res, token);
+        req.http_responses.report_creation_successful(req, res, token);
     }).catch(error => {
         req.http_responses.report_fail_with_message(req, res, "Username already used");
     })

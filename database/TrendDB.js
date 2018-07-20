@@ -159,7 +159,7 @@ function get_user_count_on(user_counts, date) {
 
 // [List-of Number] -> Number
 // Returns the trend weight for the given disease
-// in the currnet location
+// in the current location
 function calculate_trend(percent_infected) {
     var average_infection = 0;
     for (let percent of percent_infected) {

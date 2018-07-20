@@ -13,7 +13,7 @@ const auth_helpers = require('../helpers/auth_helpers.js');
 
 main_route.use(auth_helpers.verifyVersion);
 // Logs this patient
-// Will give back the users authenticaiton token
+// Will give back the users authentication token
 main_route.post('/login',login.login_user);
 
 // Adds a user to the database

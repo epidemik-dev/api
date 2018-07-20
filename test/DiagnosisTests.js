@@ -43,7 +43,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Adds a user to the database", function () {
-        it("should give status 201 if the adding was sucessful", function (done) {
+        it("should give status 201 if the adding was successful", function (done) {
             chai.request(app)
                 .post('/users')
                 .query({
@@ -64,7 +64,7 @@ describe("Diagnosis", function () {
                 });
         });
 
-        it("should give status 201 if the adding was sucessful", function (done) {
+        it("should give status 201 if the adding was successful", function (done) {
             chai.request(app)
                 .post('/users')
                 .query({
@@ -85,7 +85,7 @@ describe("Diagnosis", function () {
                 });
         });
 
-        it("should give status 201 if the adding was sucessful", function (done) {
+        it("should give status 201 if the adding was successful", function (done) {
             chai.request(app)
                 .post('/users')
                 .query({
@@ -106,7 +106,7 @@ describe("Diagnosis", function () {
                 });
         });
 
-        it("should give status 201 if the adding was sucessful", function (done) {
+        it("should give status 201 if the adding was successful", function (done) {
             chai.request(app)
                 .post('/users')
                 .query({
@@ -129,7 +129,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Add diseases to the system", function () {
-        it("should give status 200 if adding is sucessful", function (done) {
+        it("should give status 200 if adding is successful", function (done) {
             chai.request(app)
                 .post('/users/ryan/diseases')
                 .query({
@@ -149,7 +149,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Mark a disease as healthy", function () {
-        it("should give status 204 if the adding is sucessful", function (done) {
+        it("should give status 204 if the adding is successful", function (done) {
             chai.request(app)
                 .patch('/users/ryan/diseases')
                 .query({
@@ -164,7 +164,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Add diseases to the system", function () {
-        it("should give status 200 if adding is sucessful", function (done) {
+        it("should give status 200 if adding is successful", function (done) {
             chai.request(app)
                 .post('/users/ryan/diseases')
                 .query({
@@ -184,7 +184,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Mark a disease as healthy", function () {
-        it("should give status 204 if the adding is sucessful", function (done) {
+        it("should give status 204 if the adding is successful", function (done) {
             chai.request(app)
                 .patch('/users/ryan/diseases')
                 .query({
@@ -199,7 +199,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Add diseases to the system", function () {
-        it("should give status 200 if adding is sucessful", function (done) {
+        it("should give status 200 if adding is successful", function (done) {
             chai.request(app)
                 .post('/users/ryan/diseases')
                 .query({
@@ -219,7 +219,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Mark a disease as healthy", function () {
-        it("should give status 204 if the adding is sucessful", function (done) {
+        it("should give status 204 if the adding is successful", function (done) {
             chai.request(app)
                 .patch('/users/ryan/diseases')
                 .query({
@@ -234,7 +234,7 @@ describe("Diagnosis", function () {
     });
 
     describe("Add diseases to the system", function () {
-        it("should give status 200 if adding is sucessful", function (done) {
+        it("should give status 200 if adding is successful", function (done) {
             chai.request(app)
                 .post('/users/ryan/diseases')
                 .query({

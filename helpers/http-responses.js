@@ -35,7 +35,7 @@ function report_success_no_info(req, res) {
 }
 
 // Req Res Object -> Void
-// Tells the user that their querry suceeded 
+// Tells the user that their query succeeded 
 // and we have something to give back
 function report_success_with_info(req, res, info) {
     report_status(res, 200);
@@ -49,7 +49,7 @@ function report_fail_with_message(req, res, message) {
     res.end(JSON.stringify(message));
 }
 
-function report_creation_sucessful(req, res, info) {
+function report_creation_successful(req, res, info) {
     report_status(res, 201);
     res.end(JSON.stringify(info));
 }
@@ -83,7 +83,7 @@ module.exports = {
     report_success_no_info: report_success_no_info,
     report_success_with_info: report_success_with_info,
     report_fail_with_message: report_fail_with_message,
-    report_creation_sucessful: report_creation_sucessful,
+    report_creation_successful: report_creation_successful,
     report_accepted: report_accepted,
     report_bad_version: report_bad_version
 };

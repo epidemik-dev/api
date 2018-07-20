@@ -47,7 +47,7 @@ class UserDB {
     }
 
     // String String (String -> Void) -> Void
-    // Checks this users login and if sucessful gives a auth token
+    // Checks this users login and if successful gives a auth token
     login_user(username, password, callback) {
         var get_salt_query = mysql.format(get_user_salt_sql, [username]);
         var connection;
@@ -286,7 +286,7 @@ class UserDB {
 
     // String -> Promise(Boolean)
     // Returns whether or not this user is sick
-    // True if sick, false if healty
+    // True if sick, false if healthy
     is_user_sick(userID) {
         var is_sick_query = mysql.format(get_user_current_sickness, [userID]);
         return this.pool.getConnection().then(connection => {

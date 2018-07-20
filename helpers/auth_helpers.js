@@ -30,7 +30,7 @@ function canViewDisease(req, res, next) {
 }
 
 
-// Vefifies the JWT and writes the info to the req
+// Verifies the JWT and writes the info to the req
 function verifyJWT(req, res, next) {
     req.authDB.verifyJWT(req).then(verified => {
         req.verified = verified;
