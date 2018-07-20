@@ -27,9 +27,9 @@ function report_request_not_supported(req, res) {
 }
 
 // Req Res -> Void
-// Tells the user that their querry suceeded 
+// Tells the user that their query succeeded 
 // but we have nothing to give back
-function report_sucess_no_info(req, res) {
+function report_success_no_info(req, res) {
     report_status(res, 204);
     res.end();
 }
@@ -37,7 +37,7 @@ function report_sucess_no_info(req, res) {
 // Req Res Object -> Void
 // Tells the user that their querry suceeded 
 // and we have something to give back
-function report_sucess_with_info(req, res, info) {
+function report_success_with_info(req, res, info) {
     report_status(res, 200);
     res.end(JSON.stringify(info));
 }
@@ -80,8 +80,8 @@ module.exports = {
     report_bad_token: report_bad_token,
     report_not_found: report_not_found,
     report_request_not_supported: report_request_not_supported,
-    report_sucess_no_info: report_sucess_no_info,
-    report_sucess_with_info: report_sucess_with_info,
+    report_success_no_info: report_success_no_info,
+    report_success_with_info: report_success_with_info,
     report_fail_with_message: report_fail_with_message,
     report_creation_sucessful: report_creation_sucessful,
     report_accepted: report_accepted,

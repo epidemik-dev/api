@@ -1,9 +1,9 @@
 function is_user_sick(req, res) {
     req.userDB.is_user_sick(req.params.userID).then(result => {
         if(result) {
-            req.http_responses.report_sucess_with_info(req, res, true);
+            req.http_responses.report_success_with_info(req, res, true);
         } else {
-            req.http_responses.report_sucess_with_info(req, res, false);
+            req.http_responses.report_success_with_info(req, res, false);
         }
     }).catch(error => {
         req.http_responses.report_not_authorized(req, res);

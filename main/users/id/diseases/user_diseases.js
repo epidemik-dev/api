@@ -11,7 +11,7 @@ function add_disease(req, res) {
         for(var i in result) {
             result[i].disease_name = result[i].disease_name.replace("-", " ");
         }
-        req.http_responses.report_sucess_with_info(req, res, result);
+        req.http_responses.report_success_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     });
@@ -19,7 +19,7 @@ function add_disease(req, res) {
 
 function mark_healthy(req, res) {
     req.diseaseDB.mark_healthy(req.query.date_healthy, req.params.userID).then(result => {
-        req.http_responses.report_sucess_no_info(req, res);
+        req.http_responses.report_success_no_info(req, res);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     })
@@ -27,7 +27,7 @@ function mark_healthy(req, res) {
 
 function get_all_disease(req, res) {
     req.diseaseDB.get_all_disease_for(req.params.userID).then(result => {
-        req.http_responses.report_sucess_with_info(req, res, result);
+        req.http_responses.report_success_with_info(req, res, result);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
     })
