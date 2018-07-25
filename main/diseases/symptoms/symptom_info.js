@@ -55,7 +55,11 @@ function get_symptom_info(req, res) {
         },
         body_part_question_map: {
             "head": [1,2,3],
-            "chest": [4,5,6]
+            "chest": [4,5,6],
+            "full": [4,5,6],
+            "stomach": [4,5,6],
+            "arms": [4,5,6],
+            "legs": [4,5,6]
         }
     }
     req.http_responses.report_success_with_info(req, res, to_send);
