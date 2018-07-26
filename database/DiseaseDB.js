@@ -405,9 +405,12 @@ function add_disease_with_connection(disease_name, date_sick, date_healthy, user
         }
         return Promise.all(toPromise);
     }).then(res => {
-        if(should_diagnose) {
+        if(should_diagnose && disease_name === null) {
             return diagnose_user(username, connection);
         } else {
+            if(disease_name === null) {
+                connection.release();
+            }
             return [];
         }
     });
