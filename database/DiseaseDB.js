@@ -339,7 +339,7 @@ class DiseaseDB {
             var num_to_add = 10;
             var promises = [];
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Common-Cold", "1800-01-01", "1800-01-01", "admin", [1, 2, 3, 4, 5], false, connection));
+                promises.push(add_disease_with_connection("Common Cold", "1800-01-01", "1800-01-01", "admin", [1, 2, 3, 4, 5], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
                 promises.push(add_disease_with_connection("Influenza-(Flu)", "1800-01-01", "1800-01-01", "admin", [6, 2, 7, 8, 4], false, connection));

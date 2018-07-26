@@ -17,18 +17,13 @@ CREATE TABLE USER (
     date_reg DATE,
     dob DATE,
     gender VARCHAR(20),
+    weight VARCHAR(5),
+    height VARCHAR(5),
+    does_smoke BOOLEAN,
+    has_hypertension BOOLEAN,
+    has_diabetes BOOLEAN,
+    has_high_cholesterol BOOLEAN,
     PRIMARY KEY (username)
-);
-
--- Stores the join between users and business owners (also users)
--- This table is used to store information for Epidemik Management
--- Every business can employ every employee only once at a given time
-CREATE TABLE BUSUSER (
-    uName VARCHAR(200),
-    bName VARCHAR(200),
-    PRIMARY KEY (uName,bName),
-    FOREIGN KEY (uName) REFERENCES USER(username),
-    FOREIGN KEY (bName) REFERENCES USER(username)
 );
 
 -- Stores the information for a disease point

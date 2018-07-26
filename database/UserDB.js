@@ -8,8 +8,8 @@ var child = require("child_process");
 var exec = child.exec;
 
 
-const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender)
-                                  VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?     )`
+const add_user_sql = `INSERT INTO USER (deviceID, latitude, longitude, username, password, salt, date_reg, dob, gender, weight, height, does_smoke, has_hypertension, has_diabetes, has_high_cholesterol)
+                                  VALUES(?,        ?,        ?,        ?,         ?,        ?,    ?,        ?,   ?    , ?     , ?     , ?         , ?               , ?           , ?)`
 const delete_user_sym_sql = `DELETE DISEASE_SYMPTOM FROM DISEASE_SYMPTOM, DISEASE WHERE diseaseID = id AND username = ?`
 const delete_user_diseases_sql = `DELETE FROM DISEASE WHERE username = ?`
 const delete_user_sql = `DELETE FROM USER where username = ?`
@@ -106,12 +106,12 @@ class UserDB {
     // String String String Number Number Date String -> Promise(String)
     // Adds a user based on this information to the database
     // Returns the users JWT when done
-    add_user(deviceID, username, unencrypt_password, latitude, longitude, dob, gender) {
+    add_user(deviceID, username, unencrypt_password, latitude, longitude, dob, gender, weight, height, does_smoke, has_hypertension, has_diabetes, has_high_cholesterol) {
         latitude = latitude - latitude % process.env.ERR_RANGE + Number(process.env.ERR_RANGE);
         longitude = longitude - longitude % process.env.ERR_RANGE + Number(process.env.ERR_RANGE);
         var salt = bcrypt.genSaltSync(saltRounds);
         var password = bcrypt.hashSync(unencrypt_password, salt);
-        var add_user_query = mysql.format(add_user_sql, [deviceID, latitude, longitude, username, password, salt, new Date(), dob, gender]);
+        var add_user_query = mysql.format(add_user_sql, [deviceID, latitude, longitude, username, password, salt, new Date(), dob, gender, weight, height, does_smoke, has_hypertension, has_diabetes, has_high_cholesterol]);
 
         return this.pool.getConnection().then(connection => {
             var res = connection.query(add_user_query);
