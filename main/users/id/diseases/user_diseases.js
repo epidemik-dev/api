@@ -34,7 +34,7 @@ function get_all_disease(req, res) {
 }
 
 function delete_healthy(req, res) {
-    req.diseaseDB.delete_healthy_diseases(req.params.username).then(result => {
+    req.diseaseDB.delete_healthy_diseases(req.params.userID).then(result => {
         req.http_responses.report_success_no_info(req, res);
     }).catch(error => {
         req.http_responses.report_not_found(req, res);
