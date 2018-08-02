@@ -61,8 +61,8 @@ const update_disease_sql = 'UPDATE DISEASE SET disease_name = ? WHERE username =
 const remove_diag_disease_sql = `DELETE DISEASE_SYMPTOM FROM DISEASE_SYMPTOM JOIN DISEASE ON diseaseID = id WHERE username = 'admin';
                                  DELETE FROM DISEASE where username = 'admin';`;
 
-const delete_user_healthy = `DELETE DISEASE_SYMPTOM FROM DISEASE JOIN DISEASE_SYMPTOM on diseaseID = id WHERE date_healthy IS NULL AND username = ?
-                            DELETE FROM DISEASE where date_healthy IS NULL AND username = ?`
+const delete_user_healthy = `DELETE DISEASE_SYMPTOM FROM DISEASE JOIN DISEASE_SYMPTOM on diseaseID = id WHERE date_healthy IS NULL AND username = ?;
+                            DELETE FROM DISEASE where date_healthy IS NULL AND username = ?;`
 
 class DiseaseDB {
 
