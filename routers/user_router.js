@@ -30,6 +30,8 @@ user_route.patch('/:userID', single_user.change_address);
 user_route.get('/:userID', single_user.get_info);
 // Add a disease to their account
 user_route.post('/:userID/diseases', user_diseases.add_disease);
+// Deletes all of this users healthy diseases
+user_route.delete('/:userID/diseases', user_diseases.delete_healthy);
 // Say they are healthy
 user_route.patch('/:userID/diseases', user_diseases.mark_healthy);
 // Returns all of this users diseases

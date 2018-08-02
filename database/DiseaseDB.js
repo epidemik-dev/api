@@ -61,6 +61,9 @@ const update_disease_sql = 'UPDATE DISEASE SET disease_name = ? WHERE username =
 const remove_diag_disease_sql = `DELETE DISEASE_SYMPTOM FROM DISEASE_SYMPTOM JOIN DISEASE ON diseaseID = id WHERE username = 'admin';
                                  DELETE FROM DISEASE where username = 'admin';`;
 
+const delete_user_healthy = `DELETE DISEASE_SYMPTOM FROM DISEASE JOIN DISEASE_SYMPTOM on diseaseID = id WHERE username = ?
+                            DELETE FROM DISEASE where username = ?`
+
 class DiseaseDB {
 
     constructor(db_name) {
@@ -185,6 +188,17 @@ class DiseaseDB {
             return toReturn;
         });
     }
+    
+    // String -> Promise(Void)
+    // Deletes all entries from a users account where they are healthy
+    delete_healthy_diseases(username) {
+        var delete_query = mysql.format(delete_user_healthy, [username, username]);
+        return this.pool.getConnection().then(connection => {
+            var res = connection.query(delete_query);
+            connection.release();
+            return res;
+        });
+    }
 
     // String -> Promise([List-of Disease])
     // Returns every disease point that this person has experienced
@@ -205,6 +219,7 @@ class DiseaseDB {
                     }
                     last_id = result[i].id;
                     cur_disease = {
+                        diseaseID: result[i].id,
                         disease_name: result[i].disease_name,
                         date_sick: result[i].date,
                         date_healthy: result[i].date_healthy,
@@ -371,8 +386,6 @@ class DiseaseDB {
             return;
         })
     }
-
-
 }
 
 // String Connection -> Promise(String)
