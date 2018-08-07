@@ -77,6 +77,16 @@ INSERT INTO SYMPTOM VALUES (24, "My eyes are red");
 INSERT INTO SYMPTOM VALUES (25, "I have discharge");
 INSERT INTO SYMPTOM VALUES (26, "My eyes are swelling");
 INSERT INTO SYMPTOM VALUES (27, "I have mouth sores");
+INSERT INTO SYMPTOM VALUES (28, "I have bloating");
+INSERT INTO SYMPTOM VALUES (29, "I have swollen lymph nodes");
+INSERT INTO SYMPTOM VALUES (30, "My neck is stiff");
+INSERT INTO SYMPTOM VALUES (31, "I have joint pain");
+INSERT INTO SYMPTOM VALUES (32, "My memory is feeling poor");
+INSERT INTO SYMPTOM VALUES (33, "I have been bitten by a tick");
+INSERT INTO SYMPTOM VALUES (34, "I have shortness of breath");
+INSERT INTO SYMPTOM VALUES (35, "I have chest pain");
+INSERT INTO SYMPTOM VALUES (36, "I am losing weight quickly");
+INSERT INTO SYMPTOM VALUES (37, "I am coughing up blood");
 
 -- Stores which diseaseID has which symptioms
 CREATE TABLE DISEASE_SYMPTOM (

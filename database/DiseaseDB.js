@@ -360,25 +360,25 @@ class DiseaseDB {
                 promises.push(add_disease_with_connection("Influenza-(Flu)", "1800-01-01", "1800-01-01", "admin", [6, 2, 7, 8, 4], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Gastroenteritis-(Stomach-Flu)", "1800-01-01", "1800-01-01", "admin", [9, 10, 11, 12, 2], false, connection));
+                promises.push(add_disease_with_connection("Gastroenteritis-(Stomach-Flu)", "1800-01-01", "1800-01-01", "admin", [9, 10, 11, 12, 2, 28, 5, 18], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Staph-Infection", "1800-01-01", "1800-01-01", "admin", [13, 14, 15, 2, 16], false, connection));
+                promises.push(add_disease_with_connection("Staph-Infection", "1800-01-01", "1800-01-01", "admin", [14, 13, 15, 16, 2], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
                 promises.push(add_disease_with_connection("Strep-Throat", "1800-01-01", "1800-01-01", "admin", [17, 13, 2, 18, 5], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Lyme-Disease", "1800-01-01", "1800-01-01", "admin", [19, 2, 5, 7, 18], false, connection));
+                promises.push(add_disease_with_connection("Lyme-Disease", "1800-01-01", "1800-01-01", "admin", [6,5,7,18,29,19,30,31,32], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Tuberculosis", "1800-01-01", "1800-01-01", "admin", [20, 21, 6, 7, 22], false, connection));
+                promises.push(add_disease_with_connection("Tuberculosis", "1800-01-01", "1800-01-01", "admin", [20,34,35,2,21,36,37], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Pink-Eye", "1800-01-01", "1800-01-01", "admin", [23, 3, 24, 25, 26], false, connection));
+                promises.push(add_disease_with_connection("Pink-Eye", "1800-01-01", "1800-01-01", "admin", [23,24,26,25,3], false, connection));
             }
             for(var i = 0; i < num_to_add; i++) {
-                promises.push(add_disease_with_connection("Hand-Foot-and-Mouth", "1800-01-01", "1800-01-01", "admin", [15, 16, 20, 5, 27], false, connection));
+                promises.push(add_disease_with_connection("Hand-Foot-and-Mouth", "1800-01-01", "1800-01-01", "admin", [2,17,20,16,5], false, connection));
             }
             return Promise.all(promises);
         }).then(result => {
