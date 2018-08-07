@@ -1,5 +1,5 @@
 function get_disease_information(req, res) {
-    let disease_name = req.params.disease_name;
+    let disease_name = req.params.diseaseID;
     var to_send;
     if(disease_name === "Common Cold") {
         to_send = {
@@ -41,14 +41,7 @@ function get_disease_information(req, res) {
     } else if(disease_name === "Pink Eye") {
 
     } else {
-    }
-    to_send = {
-        disease_name: disease_name,
-        medicines: ["Mucinex - For Cough",
-                    "Amoxil - Treats Infection",
-                    "Herbal Tea - Soothes the Throat"],
-        doctor: 1, //0 = no, 1 = potential, 2 = definitely
-        description: "Strep Throat is a bacterial infection that causes pain in the throat. Medical attention is recommended if the symptoms last more than two days."
+        
     }
     req.http_responses.report_success_with_info(req, res, to_send);
 }
