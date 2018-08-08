@@ -248,7 +248,7 @@ describe("Diagnosis", function () {
                     symptoms: [20, 21, 6, 22, 19, 2, 5, 7, 18]
                 })
                 .end(function (err, res) {
-                    expect(res.body[0].disease_name).to.be.equal("Strep Throat");
+                    expect(res.body[0].disease_name).to.be.equal("Influenza (Flu)");
                     done();
                 });
         });
