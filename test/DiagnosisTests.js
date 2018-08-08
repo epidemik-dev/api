@@ -15,6 +15,7 @@ const join = get_app("EPIDEMIK_TEST", false);
 const app = join[0];
 const reset = join[1];
 const diagnose = join[2];
+const disease_information= require('../helpers/disease_helpers.js').disease_information;
 
 describe("Diagnosis", function () {
     describe("Resets the database", function () {
@@ -247,7 +248,48 @@ describe("Diagnosis", function () {
                     symptoms: [20, 21, 6, 22, 19, 2, 5, 7, 18]
                 })
                 .end(function (err, res) {
-                    expect(res.body[0].disease_name).to.be.equal("Lyme Disease");
+                    expect(res.body[0].disease_name).to.be.equal("Strep Throat");
+                    done();
+                });
+        });
+    });
+
+    describe("Get disease info", function() {
+        it("should give status 200 if the disease was found", function (done) {
+            chai.request(app)
+                .get('/diseases/Common-Cold/information')
+                .query({
+                    version: "1",
+                    auth_token: ryan_auth_token
+                })
+                .end(function (err, res) {
+                    expect(res.body).to.be.deep.equal(disease_information["common cold"]);
+                    done();
+                });
+        });
+
+        it("should give the default if the disease was not found", function (done) {
+            chai.request(app)
+                .get('/diseases/unknown/information')
+                .query({
+                    version: "1",
+                    auth_token: ryan_auth_token
+                })
+                .end(function (err, res) {
+                    expect(res.body).to.be.deep.equal(disease_information["default"]);
+                    done();
+                });
+        });
+
+        it("should overwrite the disease name if not found", function (done) {
+            chai.request(app)
+                .get('/diseases/unknown2/information')
+                .query({
+                    version: "1",
+                    auth_token: ryan_auth_token
+                })
+                .end(function (err, res) {
+                    expect(res.body.disease_name).to.be.equal("unknown2");
                     done();
                 });
         });
