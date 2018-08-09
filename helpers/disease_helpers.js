@@ -1,5 +1,5 @@
 function filter_disease_name(req, res, next) {
-    req.params.diseaseID = req.params.diseaseID.replace("-", " ");
+    req.params.diseaseID = req.params.diseaseID.replace(/-/g, " ");
     next();
 }
 

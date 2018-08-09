@@ -69,7 +69,8 @@ function get_symptom_info(req, res) {
             "full": [6,7,8,11,12,13,14,15,16,18,19,21,22,31,33,36],
             "stomach": [9,10,11,12,22,28],
             "arms": [12,13,15,16,19],
-            "legs": [12,13,15,16,19,33]
+            "legs": [12,13,15,16,19,33],
+            "neck": [1,2,3]
         }
     }
     req.http_responses.report_success_with_info(req, res, to_send);
