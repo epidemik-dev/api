@@ -64,13 +64,13 @@ function get_symptom_info(req, res) {
             "Other": [1, 2, 3, 4, 5, 6]
         },
         body_part_question_map: {
-            "head": [1,2,3,4,5,8,9,17,23,24,25,26,27,29,30,32],
+            "head": [1,2,3,4,5,8,9,17,23,24,25,26,27,32],
             "chest": [8,20,34,35,37],
             "full": [6,7,8,11,12,13,14,15,16,18,19,21,22,31,33,36],
             "stomach": [9,10,11,12,22,28],
             "arms": [12,13,15,16,19],
             "legs": [12,13,15,16,19,33],
-            "neck": [1,2,3]
+            "neck": [29,18,26,14,15,30]
         }
     }
     req.http_responses.report_success_with_info(req, res, to_send);
