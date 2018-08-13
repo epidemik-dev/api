@@ -363,7 +363,7 @@ class DiseaseDB {
                 }
                 var cur_syms = disease_symptoms[diseases[i]];
                 for(var x = 0; x < num_to_add; x++) {
-                    promises.push(add_disease_with_connection(diseases[i].replace(/ /g, "-");, "1800-01-01", "1800-01-01", "admin", cur_syms, false, connection));
+                    promises.push(add_disease_with_connection(diseases[i].replace(/\ /g, "-"), "1800-01-01", "1800-01-01", "admin", cur_syms, false, connection));
                 }
             }
             return Promise.all(promises);
