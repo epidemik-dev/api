@@ -1,7 +1,6 @@
 const disease_information = require("../../../../helpers/disease_helpers.js").disease_information
 
 function get_disease_information(req, res) {
-    console.log(req.params.diseaseID, "hello");
     let disease_name = req.params.diseaseID.toLowerCase();
     var to_send = disease_information[disease_name];
     if(to_send == undefined) {

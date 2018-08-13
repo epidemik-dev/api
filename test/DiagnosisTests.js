@@ -25,9 +25,7 @@ describe("Diagnosis", function () {
                 done();
             })
         });
-    });
 
-    describe("Add diagnosis data", function () {
         it("should not error", function (done) {
             diagnose().then(() => {
                 expect(1).to.be.equal(1);
@@ -248,7 +246,7 @@ describe("Diagnosis", function () {
                     symptoms: [20, 21, 6, 22, 19, 2, 5, 7, 18]
                 })
                 .end(function (err, res) {
-                    expect(res.body[0].disease_name).to.be.equal("Influenza (Flu)");
+                    expect(res.body[0].disease_name).to.be.equal("Bronchitis");
                     done();
                 });
         });
