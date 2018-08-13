@@ -363,7 +363,7 @@ class DiseaseDB {
                 }
                 var cur_syms = disease_symptoms[diseases[i]];
                 for(var x = 0; x < num_to_add; x++) {
-                    promises.push(add_disease_with_connection(diseases[i].replace(/\ /g, "-"), "1800-01-01", "1800-01-01", "admin", cur_syms, false, connection));
+                    promises.push(add_disease_with_connection(diseases[i], "1800-01-01", "1800-01-01", "admin", cur_syms, false, connection));
                 }
             }
             return Promise.all(promises);
@@ -394,6 +394,9 @@ function diagnose_user(username, connection) {
 // If should_diagnose is true it will return the diagnosis and release the connection
 // EFFECT: will release the connection if should_diagnose is true
 function add_disease_with_connection(disease_name, date_sick, date_healthy, username, symptoms, should_diagnose, connection) {
+    if(disease_name != null) {
+        disease_name = disease_name.replace(/-/g, " ");
+    }
     var add_disease_query = mysql.format(add_disease_sql, [disease_name, date_sick, date_healthy, username]);
     return connection.query(add_disease_query).then(result => {
         var disID = result.insertId;
