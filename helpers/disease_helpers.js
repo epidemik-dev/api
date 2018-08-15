@@ -117,7 +117,7 @@ var disease_information = {
             "Amoxil - Treats Infection"
         ],
         doctor: 1, //0 = no, 1 = potential, 2 = definitely
-        description: "The Stomach Flu is a "
+        description: "The Stomach Flu is a viral or bacterial disease that can cause flu-like symptoms and vomiting. Symptoms usually clear after one to two weeks."
     },
     "staph infection": {
         disease_name: "Staph Infection",
