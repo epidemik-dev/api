@@ -12,15 +12,23 @@ const main_route = express.Router();
 const auth_helpers = require('../helpers/auth_helpers.js');
 
 main_route.use(auth_helpers.verifyVersion);
+
+main_route.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // If needed
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 // Logs this patient
 // Will give back the users authentication token
-main_route.post('/login',login.login_user);
+main_route.post('/login', login.login_user);
 
 // Adds a user to the database
 main_route.post("/users", all_users.add_user);
 
 // Sets the router for /users
-main_route.use('/users',user_router);
+main_route.use('/users', user_router);
 
 // Sets the router for /diseases
 main_route.use('/diseases', disease_router);
