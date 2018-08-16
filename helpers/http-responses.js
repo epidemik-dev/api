@@ -71,6 +71,7 @@ function report_bad_version(req, res) {
 
 function report_status(res, status_code) {
     res.writeHead(status_code, {
+        "Access-Control-Allow-Origin": "https://epidemik.us, https://www.epidemik.us",
         "Content-Type": "application/json"
     });
 }
