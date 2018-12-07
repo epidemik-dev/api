@@ -18,6 +18,7 @@ before_install:
 - export TZ=America/New_York
 after_success:
 - ssh ${SFTP_USER}@epidemik.us
+- yes
 - ${SFTP_PASSWORD}
 - cd /var/api
 - forever stop 0
