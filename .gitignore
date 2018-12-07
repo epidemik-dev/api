@@ -12,4 +12,8 @@ node_modules
 
 .vscode
 
+api_key.js
+
+client-secret.json
+
 credentials.tar.gz
