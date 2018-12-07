@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "lts/*"
+env:
+  global:
+    - DB_HOST=localhost
+    - DB_USER=root
+    - DB_PASS=
+    - JWT_SECRET=jewifosjfjweieofji
+    - ADMIN_PASSWORD=password
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS EPIDEMIK_TEST;'  
+  - export TZ=America/New_York
