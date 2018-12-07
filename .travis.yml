@@ -18,7 +18,7 @@ env:
 services:
   - mysql  
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS EPIDEMIK_TEST;
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS EPIDEMIK_TEST;'
   - export TZ=America/New_York
   - if [ ! -d $HOME/google-cloud-sdk/bin ]; then
       rm -rf $HOME/google-cloud-sdk;
