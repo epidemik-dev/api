@@ -26,5 +26,5 @@ before_install:
 - source $HOME/google-cloud-sdk/path.bash.inc
 - gcloud components update kubectl
 - gcloud version
-after_sucess:
+after_success:
   - ${URL}
