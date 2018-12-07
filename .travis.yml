@@ -31,5 +31,5 @@ before_install:
 - gcloud auth activate-service-account --key-file client-secret.json
 after_success:
 - gcloud config set project epidemik-1514729927017
-- gcloud compute --project "epidemik-1514729927017" ssh --zone "us-east1-b" "epidemik-instance-1" --command="cd /var/api forever stopall sudo git fetch --all sudo git reset --hard origin/master sudo npm install forever start index.js"
+- gcloud compute --project "epidemik-1514729927017" ssh --zone "us-east1-b" "epidemik-instance-1" --command="cd /var/api \nforever stopall \nsudo git fetch --all \nsudo git reset --hard origin/master \nsudo npm install \nforever start index.js"
 
