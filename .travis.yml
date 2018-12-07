@@ -6,8 +6,9 @@ env:
     - DB_HOST=localhost
     - DB_USER=root
     - DB_PASS=
-    - JWT_SECRET=jewifosjfjweieofji
+    - JWT_SECRET=askjfnskjnfdjsnfkjsdnfksdjnfkjsdnfkdjsnfksdjmnfapokmdfpoasejfgkewhopirw8herhbk
     - ADMIN_PASSWORD=password
+    - ERR_RANGE=0.01
 services:
   - mysql
 before_install:
