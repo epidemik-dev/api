@@ -31,4 +31,4 @@ before_install:
 - gcloud auth activate-service-account --key-file client-secret.json
 after_success:
 - gcloud config set project epidemik-1514729927017
-- gcloud compute ssh
+- gcloud compute --project "epidemik-1514729927017" ssh --zone "us-east1-b" "epidemik-instance-1"
