@@ -17,8 +17,6 @@ env:
 services:
 - mysql  
 before_install:
-- openssl aes-256-cbc -K $encrypted_c2faa57b9c45_key -iv $encrypted_c2faa57b9c45_iv
-  -in deploy.enc -out deploy -d
 - mysql -e 'CREATE DATABASE IF NOT EXISTS EPIDEMIK_TEST;'
 - export TZ=America/New_York
 - gcloud version || true
