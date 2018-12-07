@@ -27,4 +27,4 @@ before_install:
 - gcloud components update kubectl
 - gcloud version
 after_success:
-  - ${URL}
+  - gcloud compute --project "epidemik-1514729927017" ssh --zone "us-east1-b" "epidemik-instance-1"
