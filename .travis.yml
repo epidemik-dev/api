@@ -1,9 +1,6 @@
 language: node_js
 node_js:
 - lts/*
-cache:
-  directories:
-  - "$HOME/google-cloud-sdk"
 env:
   global:
   - secure: 1EVCZMHv5vjhoZWfe3oYlN1RCvN5K1PWA8EcAPxQBZKcYSEEXoYSMDa4uQq4cU94r1F4mklmjk9SBNoSx5k3JTd9kdWj8p1nqOdgGA2tTItAP9VhuncfNN+KVoryCw9uZjaDGXqWmuY3JiNpQEWqUXsj3/kSkXPGsx8pQjVpNHRsiH1obywdRvhkz97/VtKhNqEXWbHhjIbE3i2GjyUMFqOnQPqiYdEwuRfnwZyEAQ4iROPWzfGpYyoyHqyUBjsffg5QlFK0zItizKvHjBk41WlyRWfee0Ey7VVNBPdeqxWtmNDkOpYRfercZeOog3pASUfNnxCoXZjSGeIfsj/FRWXFvzU2pbtEcmA4lz+QBr23VkwlxJ994UZvjAn3AyRLTjlV0mhEyszKS+RGeFDtYYUM0bF3BrlHY6oB0/0ECBF31SzYMJE6UDCfs7khtEqeHBy5PCQETTmMahv6/mJB0NmebS8GU/oBq7DqFr1Z4pPysbVOf92s6sfeXW/9puiVKmCOi5r/rMArs+pEbQbFhNIiRtSXxMik1aZxYUNJ8t2f0qtpT49nQmP8Tt9l8Ij3U71jaeVrKUHYg9eL9JNp8zHXuln2LtIGWY9Ea9tziCujERw0N/hq9ODx21+33l4V23KHL4nq6Z++/5wLogf1mI4dwt3LKOymPwQdMdrBPRU=
@@ -14,23 +11,8 @@ env:
   - secure: zNJTresucLE+JjFf5GX+aD/FIPqI7nWfBaIernkUzTJ//hYsZIGWaxNcK6+gJ9RO0XobHZvXdgSmxVHCLOfcGIgfR5a/RgGLvxVSftp+AxrgvuCAXqGA9ScMF4cbRUiTjq1b3NEQWxIpSeJk3/tpZEhMXY43tqaFl3PkU6iDRqjzdWSJTkwpZiVvge0jqSQdTYWtVqc0WHBT7/H4pJd7S+iroRVFZuiqGn0gRQKf4l7aODeRfrHtKWDXSr0FGiBwc+OZIp/q4eLik4L2Uzy8FXe2pcWJQ8yLdAuk0x2nbkgt84guDmr3BamurHe25cKNpowH3mxjlJf/11f3iQlWf2mk27XNIRN8VgMpGKx+xsqtjCG/0NWvgcc/NoteG9omodP6w79QANPlJPaAq0Z6LYsy3M9+uwjWiqPf/Nfk2MGOOJOBpLt+oXzDgWegFirG993fBMNupU8hJHx1FdsYlu/VCvrudwa9wZQDIEhCzdKX6SkiAmMlGbth1RXPiPSLjPaJpReHNk0AkX3cNSrNJ+MFRVZOKXTNX08QNFUS4z4nM9QCGnmZIfUqhDCMA2CboVitplaj854sLKnS8C6+/TJe4RwIs88wqUI+ZRBabIPTN6ICk3uC/1cWeSQk3pY0gj7XERH/f/joKjSM4flDTxEFhF/H11Sy0166E4gPDJc=
   - secure: EThDECB3bLUvW+v/xjaCOo6ArCkfa6jCG6AtDB1h05ywZzxen//U3YRLDODqUrXl4JINiYCcyrLL7XEPYhT4/5MDIiGT6ZBKD2M6ktTWWy/fA2c+IV8qxrRj5xPmeDtO3SQaOeR7tnOO75qFicTYAM5HUZeoqwbVJElnwaTBe+w3ueoyVWxFss5RwvvtoBYvS/vwIHKGEZvP6ZaMbmRpj9vLC7OJXxef9P3WmZ9FnZsu08Aof8Fh1o9b+HWeKKX+VbjN0ESrVxjDiH3sIa3ou4KqsqHF51XdSkoGGVbtymW5mvcokdzt8Xn9FAu7koc94atjc243+gg9D27RFlakMC7fcaZdfXLRqPvAYsP8Mm6BPjRNMcQ/mdkJXKG12r0Ama20UYCIqMhUCNooX15rdm3Yn6ehsRxWFspdJJoajM9nEHm4vANNYlx/eVHQDiHMavGQ3SZE2mXwAWhcckrUQZnizJIZVkw0YRQS1LYF+WibvyYpjnw5PMOu1TIwpiAeP1tZKUUFNHtDO2xyD55zxaDIi/ZQSU7Q7F7C/Tzu9EoV64d+L5Kq6Ytq7TgkMmbLmCW8SLVVRXpXBR7fhDy4zgbn/ekrniXJ6bRlCei/TkNyeB72SrAeXJ/gzew0G+RiMQ5JIL7YXXyP+BEwuZzfF+12S+Wd5vhehR6+BbYy69s=
   - secure: Pbjbt/FO6wootgtuY90cBMbwqEsjkqA/meiQP72tKgzn5cnv1EIylAC+aalJEHkIW+b797NVNYnJwASSwR8e+mvKyveuA+k/800vcRBIsphAVYAiqXuH7timVJAjsTfmP4iN/7Kuo2kClVudx9vYONQSCZAOlg7d0qA/3hTr4ztYtFsgGO0f834htpXypijTmZ6kFx6VrUh95cP5DxOGRqlL9TPOeDA7KSSt6vBTQcyuhFEoqjiyNv1X8xyCWj/1YQ6jUhLEavR+TFPAAdeQTgFNuzU54Gr2fCUsh7udPkGBa0CZqySk5ji+/nF0K5BycoUqrXCNKrn0oBYfmbhN2jg0ss/1THwVvbzXOkRkiVTlpT7ISKmSVB5KKgwKYv298mDho56J9bq9VrFhvWQGZsuUdsvbk0hMLo7jurROEEvdGZOq/0QrEb9MR7u5TEPjOnzvXHLZz9L/qL+gF8i5KchRIGN3s/syeGQZPyyUgoz12EhsHd709zKz5Rr87n4MHhVjGPVzgL6tVfb9A4/94Yc/kbVo/BBgtwSBHSM/TaQAS1yWvGxc2OUELMyxmZQnymHWEEFVSAk8EjyvRoEIfCiKnOn0OI1rkOcs04EM0PLQqNvME2C/pzXBqlbQjyHjYcVDo/XiYDS+086z2Okj2OMkSVRO87WFwTLvh4z1Ovg=
-  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 services:
 - mysql
 before_install:
-- openssl aes-256-cbc -K $encrypted_e55bf99e1255_key -iv $encrypted_e55bf99e1255_iv
-  -in credentials.tar.gz.enc -out credentials.tar.gz -d
 - mysql -e 'CREATE DATABASE IF NOT EXISTS EPIDEMIK_TEST;'
 - export TZ=America/New_York
-- if [ ! -d $HOME/google-cloud-sdk/bin ]; then rm -rf $HOME/google-cloud-sdk; curl
-  https://sdk.cloud.google.com | bash > /dev/null; fi
-- source $HOME/google-cloud-sdk/path.bash.inc
-- gcloud components update
-- tar -xzf credentials.tar.gz
-- mkdir -p lib
-- gcloud auth activate-service-account --key-file client-secret.json
-after_success:
-- gcloud config set project epidemik-1514729927017
-- CMD=$'cd /var/api \nforever stopall \nsudo git fetch --all \nsudo git reset --hard origin/master \nsudo npm install \nforever start index.js'
-- gcloud compute --project "epidemik-1514729927017" ssh --zone "us-east1-b" "epidemik-instance-1" --command="$CMD"
-
